@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import {ipcRenderer} from  'electron';
 
 import { loadGameData } from '../actions/actions';
-import title from '../img/title.jpg';
+import title from '../../img/title.jpg';
 
 
 class Setup extends Component {
@@ -31,6 +31,9 @@ class Setup extends Component {
           </div>
           <div>
             <button onClick={() => {console.log(this.props.game)}}>Create Game</button>
+          </div>
+          <div>
+            <button onClick={() => {ipcRenderer.send('launch-admin-pannel', {players:['Tom', 'Ringo', 'Denver']});}}>Launch Admin Pannel</button>
           </div>
         </div>
       </div>

@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import {ipcRenderer} from  'electron';
+
 import Setup from './Setup';
 
 
@@ -19,6 +21,9 @@ class App extends Component {
       return question.value === value;
     });
     this.setState({showQuestion: question });
+
+    /* send answer to admin pannel */
+    ipcRenderer.send('send-answer-to-admin', question);
  
   }
 

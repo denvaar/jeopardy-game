@@ -6,7 +6,7 @@ import thunkMiddleware from 'redux-thunk';
 
 import reducers from './reducers/reducers';
 import App from './components/app';
-import './styles/styles.css';
+import '../styles/styles.css';
 
 
 const createStoreWithMiddleware = compose(

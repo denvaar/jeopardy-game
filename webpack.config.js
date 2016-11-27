@@ -2,7 +2,7 @@ var webpack = require('webpack');
 
 module.exports = { 
   entry: {
-    app: ['./index.js']
+    app: ['./src/index.js']
   },
   output: {
     filename: 'bundle.js',
@@ -12,9 +12,6 @@ module.exports = {
   resolve: {
     extensions: ['', '.js', '.jsx']
   },
-  plugins: [
-    //new webpack.IgnorePlugin(new RegExp("^(fs|ipc)$"))
-  ],
   module: {
     loaders: [
       {   

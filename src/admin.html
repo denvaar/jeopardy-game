@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="../styles/styles.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css">
+  </head>
+  <body style="background: #fff;">
+    <div class="admin-pannel">
+      <div class="current-question">
+        <p id="question"></p>
+        <i id="answer"></i>
+      <div>
+      <div class="players">
+      </div>
+    </div>
+    <script>
+      var electron = require('electron');
+      var ipcRenderer = electron.ipcRenderer;
+      ipcRenderer.on('send-answer-to-admin-reply', function(event, data) {
+        document.getElementById('question').innerHTML = data.question;
+        document.getElementById('answer').innerHTML = data.answer;
+      });
+      
+      ipcRenderer.on('launch-admin-pannel', function(event, data) {
+        setupPlayers(data.players);
+      });
+
+      function setupPlayers(players) {
+        var targetDiv = document.querySelector(".players");
+        players.forEach(player => {
+          var playerDiv = document.createElement("DIV");
+          playerDiv.innerHTML = `
+            <button class="correct-button"><i class="fa fa-check-circle fa-2x"></i></button>
+            <span>${player}</span>
+            <button class="incorrect-button"><i class="fa fa-times-circle fa-2x"></i></button>
+          `;
+          targetDiv.appendChild(playerDiv);
+        });
+        document.querySelectorAll(".correct-button").forEach(node => {
+          node.addEventListener("click", function(event) {
+            ipcRenderer.send("handle-answer");
+          });
+        });
+        document.querySelectorAll(".incorrect-button").forEach(node => {
+          node.addEventListener("click", function(event) {
+            ipcRenderer.send("handle-answer");
+          });
+        });
+      }
+    </script>
+  </body>
+</html>

@@ -127,3 +127,43 @@ input[type="text"] {
   padding: 20px 50px 20px 50px;
 }
 
+.admin-pannel {
+  background: #fff;
+  padding: 10px;
+  font-family: Helvetica Neue, sans-serif;
+}
+
+.admin-pannel .players {
+  text-align: center;
+  border: 1px solid #545454;
+  border-radius: 2px;
+  margin-top: 50px;
+}
+
+.admin-pannel .current-question p {
+  font-size: 25px;
+}
+
+.players span {
+  width: 100px;
+  display: inline-block;
+  text-align: center;
+}
+
+.players div {
+  height: 50px;
+  line-height: 50px;
+}
+.correct-button {
+  background: #58b158;
+}
+.correct-button:hover {
+  background: #67d067;
+}
+.incorrect-button {
+  background: #dc5050;
+}
+.incorrect-button:hover {
+  background: #f95a5a;
+}
+
