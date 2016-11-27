@@ -1,0 +1,129 @@
+@font-face { 
+  font-family: Gyparody Regular;
+  src: url('Gyparody.ttf');
+} 
+@font-face { 
+  font-family: Korinna Bold;
+  src: url('Korinna Bold.ttf');
+} 
+
+body {
+  background: black;
+}
+
+.title-img {
+  width: 100%;
+}
+
+.setup-screen {
+  background: #1c0224;
+  color: #e4e4fe;
+  box-shadow: 0 0 5px #000000 inset;
+  text-shadow: 2px 2px #000;
+  font-family: 'Gyparody Regular', sans-serif;
+  font-size: 30px;
+  height: 100%;
+}
+
+.setup-screen h1 {
+  margin-top: 5px;
+}
+
+.setup-screen .menu {
+  position: fixed;
+}
+
+.game-container { 
+  position: absolute;
+  width: 100%;
+  text-align: center;
+  height: 100%;
+}
+
+.category {
+  border: 1px solid #fff;
+  width: 15%;
+  margin: 5px;
+  height: 100%;
+  display: inline-block;
+}
+.title {
+  background: #004e8c;
+  width: 100%;
+  height: 100px; 
+}
+
+table {
+  font-family: 'Archivo Black', sans-serif;
+  color: #fff;
+  width: 100%;
+  height: 100%;
+  table-layout: fixed;
+border-collapse: separate;
+           border-spacing: 5px;
+}
+
+
+th, td {
+  box-shadow: 0 0 5px #000000 inset;
+  text-shadow: 2px 2px #000;
+  text-transform: uppercase;
+  font-size: 20px;
+  text-align: center;
+  vertical-align: middle;
+  background: #0d6bb6;
+}
+
+th {
+  padding: 20px 0 20px 0;
+}
+
+td {
+  cursor: default;
+  color: #c68b33;
+  text-shadow: darkgoldenrod;
+  font-size: 35px;
+  text-shadow: 2px 2px 5px #000;
+}
+
+td:hover {
+  background: #147bce;
+  color: #e7a646;
+}
+
+button {
+  cursor: pointer;
+  margin-top: 10px;
+  height: 35px;
+  width: 100px;
+  background: #2196F3;
+  color: #fff;
+  border: none;
+  font-size: 14px;
+  border-radius: 3px;
+  -webkit-appearance: none;
+}
+button:hover { background: #757575; }
+button:hover { background: #3fa6ff; }
+
+input[type="text"] {
+  padding-left: 7px;
+  height: 25px;
+  border-radius: 4px;
+  border: 1px solid #ddd;
+  font-size: 14px;
+  color: #545454;
+  margin-top: 10px;
+}
+
+.question {
+  font-family: 'Korinna Bold', sans-serif;
+  background: #0d6bb6;
+  color: #fff;
+  font-size: 35px;
+  text-transform: uppercase;
+  text-shadow: 2px 2px 5px #000;
+  height: 100%;
+  padding: 20px 50px 20px 50px;
+}
+
