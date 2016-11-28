@@ -13,6 +13,11 @@ class App extends Component {
     };
     this.openQuestion = this.openQuestion.bind(this);
     this.closeQuestion = this.closeQuestion.bind(this);
+  
+    ipcRenderer.on('update-score', (event, data) => {
+      console.log(data);
+    });
+  
   }
 
   openQuestion(category, value) {

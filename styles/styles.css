@@ -167,3 +167,11 @@ input[type="text"] {
   background: #f95a5a;
 }
 
+.disabled {
+  background: #757575;
+}
+.disabled button {
+  color: #757575;
+  background: #757575;
+  pointer-events: none;
+}

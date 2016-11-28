@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import {ipcRenderer} from  'electron';
 
+import Players from './players';
 import { loadGameData } from '../actions/actions';
 import title from '../../img/title.jpg';
 
@@ -21,10 +22,7 @@ class Setup extends Component {
     return (
       <div className="setup-screen">
         <img className="title-img" src={title} ></img>
-        <h1>Players</h1>
-        <p>Denver</p>
-        <p>Niccole</p>
-        <input type="text" placeholder={"Add team..."}></input>
+        <Players />
         <div className="menu">
           <div>
             <button onClick={() => {ipcRenderer.send('open-file-dialog');} }>Load Game</button>
@@ -33,7 +31,9 @@ class Setup extends Component {
             <button onClick={() => {console.log(this.props.game)}}>Create Game</button>
           </div>
           <div>
-            <button onClick={() => {ipcRenderer.send('launch-admin-pannel', {players:['Tom', 'Ringo', 'Denver']});}}>Launch Admin Pannel</button>
+            <button onClick={() => {ipcRenderer.send('launch-admin-pannel', {
+              players: this.props.players.map(player => {return player.name})
+            });}}>Launch Admin Pannel</button>
           </div>
         </div>
       </div>
@@ -43,6 +43,7 @@ class Setup extends Component {
 
 const mapStateToProps = (state) => {
   return {  
+    players: state.appReducer.players
   };
 }
 

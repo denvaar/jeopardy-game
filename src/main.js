@@ -51,7 +51,10 @@ ipc.on('open-file-dialog', function(event, arg) {
 });
 
 ipc.on('handle-answer', function(event, args) {
-  console.log('answer');
+  console.log(args.player);
+  console.log(args.value);
+  console.log(args.type);
+  mainWindow.send('update-score', args);
 });
 
 

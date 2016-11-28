@@ -17,9 +17,11 @@
     <script>
       var electron = require('electron');
       var ipcRenderer = electron.ipcRenderer;
+      var value = 0;
       ipcRenderer.on('send-answer-to-admin-reply', function(event, data) {
         document.getElementById('question').innerHTML = data.question;
         document.getElementById('answer').innerHTML = data.answer;
+        value = data.value;
       });
       
       ipcRenderer.on('launch-admin-pannel', function(event, data) {
@@ -31,20 +33,29 @@
         players.forEach(player => {
           var playerDiv = document.createElement("DIV");
           playerDiv.innerHTML = `
-            <button class="correct-button"><i class="fa fa-check-circle fa-2x"></i></button>
+            <button data-player="${player}" class="correct-button"><i class="fa fa-check-circle fa-2x"></i></button>
             <span>${player}</span>
-            <button class="incorrect-button"><i class="fa fa-times-circle fa-2x"></i></button>
+            <button data-player="${player}" class="incorrect-button"><i class="fa fa-times-circle fa-2x"></i></button>
           `;
           targetDiv.appendChild(playerDiv);
         });
         document.querySelectorAll(".correct-button").forEach(node => {
           node.addEventListener("click", function(event) {
-            ipcRenderer.send("handle-answer");
+            ipcRenderer.send("handle-answer", {
+              player: this.dataset.player,
+              value: value,
+              type: 'CORRECT'
+            });
           });
         });
         document.querySelectorAll(".incorrect-button").forEach(node => {
           node.addEventListener("click", function(event) {
-            ipcRenderer.send("handle-answer");
+            ipcRenderer.send("handle-answer", {
+              player: this.dataset.player,
+              value: value,
+              type: 'INCORRECT'
+            });
+            this.parentNode.innerHTML = this.dataset.player;
           });
         });
       }
