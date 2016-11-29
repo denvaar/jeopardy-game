@@ -3,6 +3,12 @@ import { connect } from 'react-redux';
 import {ipcRenderer} from  'electron';
 
 import Setup from './Setup';
+import Row from './Row';
+import Question from './Question';
+import Categories from '../containers/Categories';
+import RowContainer from '../containers/RowContainer';
+
+import { updateScore } from '../actions/actions';
 
 
 class App extends Component {
@@ -15,7 +21,8 @@ class App extends Component {
     this.closeQuestion = this.closeQuestion.bind(this);
   
     ipcRenderer.on('update-score', (event, data) => {
-      console.log(data);
+      let value = (data.type === "CORRECT") ? data.value : data.value * -1;
+      this.props.updateScore(value, data.player);
     });
   
   }
@@ -62,96 +69,5 @@ const mapStateToProps = (state) => {
   };
 }
 
-export default connect(mapStateToProps, { })(App);
-
-
-class RowContainer extends Component {
-  constructor(props) {
-    super(props);
-  }
-  render() {
-    return (
-      <tbody>
-        <Row value={200} openQuestion={this.props.openQuestion} categories={this.props.categories} />
-        <Row value={400} openQuestion={this.props.openQuestion} categories={this.props.categories} />
-        <Row value={600} openQuestion={this.props.openQuestion} categories={this.props.categories} />
-        <Row value={800} openQuestion={this.props.openQuestion} categories={this.props.categories} />
-        <Row value={1000} openQuestion={this.props.openQuestion} categories={this.props.categories} />
-      </tbody>
-    );
-  }
-}
-
-
-
-
-class Categories extends Component {
-  constructor(props) {
-    super(props);
-  }
-
-  render() {
-    let categories = Object.keys(this.props.data).map((category, i) => {
-      return (
-        <th key={i}>{category}</th>
-      );
-    });
-
-    return (
-      <tr>
-        {categories}
-      </tr>
-    );
-  }
-}
-
-class Row extends Component {
-  constructor(props) {
-    super(props);
-  }
-
-  render() {
-    let cells = [];
-    for (let i = 0; i < 6; i++) {
-      cells.push(
-        <QuestionCell key={i}
-                      value={this.props.value}
-                      openQuestion={this.props.openQuestion}
-                      category={Object.keys(this.props.categories)[i]} />
-      );
-    }
-    return (
-      <tr>
-        {cells}
-      </tr>
-    );
-  }
-}
-
-class QuestionCell extends Component {
-  constructor(props) {
-    super(props);
-  }
-
-  render() {
-    return (
-      <td onClick={() => {this.props.openQuestion(this.props.category, this.props.value);} }>
-        ${this.props.value}
-      </td>
-    );
-  }
-}
-
-
-class Question extends Component {
-  constructor(props) {
-    super(props);
-  }
-
-  render() {
-    return (
-      <div className="question" onClick={() => {this.props.closeQuestion()} }>{this.props.question.question}</div>
-    );
-  }
-}
+export default connect(mapStateToProps, { updateScore })(App);
 

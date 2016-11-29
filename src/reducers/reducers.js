@@ -1,7 +1,8 @@
 import { combineReducers } from 'redux';
 import {
   LOAD_GAME_DATA,
-  ADD_PLAYER
+  ADD_PLAYER,
+  UPDATE_SCORE,
 } from '../actions/actions';
 
 const INITIAL_STATE = {
@@ -14,6 +15,21 @@ const INITIAL_STATE = {
 
 const appReducer = (state = INITIAL_STATE, action) => {
   switch (action.type) {
+    case UPDATE_SCORE:
+      let index = state.players.findIndex(player => {
+        return player.name === action.player
+      });
+      return {
+        ...state,
+        players: [
+          ...state.players.slice(0, index),
+          {
+            name: action.player,
+            score: state.players[index].score + action.value
+          },
+          ...state.players.slice(index + 1)
+        ]
+      };
     case ADD_PLAYER:
       return {
         ...state,

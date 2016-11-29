@@ -2,7 +2,7 @@
   "name": "jeopardy",
   "version": "1.0.0",
   "description": "An app for creating/playing your own jeopardy game.",
-  "main": "./src/main.js",
+  "main": "./src/electron/main.js",
   "scripts": {
     "build": "webpack",
     "watch": "./node_modules/.bin/webpack-dev-server --host 0.0.0.0 --port 3000",

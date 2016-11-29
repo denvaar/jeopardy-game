@@ -1,5 +1,6 @@
 export const LOAD_GAME_DATA = "LOAD_GAME_DATA";
 export const ADD_PLAYER = "ADD_PLAYER";
+export const UPDATE_SCORE = "UPDATE_SCORE";
 
 export const loadGameData = (data) => {
   return dispatch => {
@@ -28,3 +29,16 @@ const _addPlayer = (player) => {
   }
 }
 
+export const updateScore = (value, player) => {
+  return dispatch => {
+    return dispatch(_updateScore(value, player));
+  }
+}
+
+const _updateScore = (value, player) => {
+  return {
+    type: UPDATE_SCORE,
+    player: player,
+    value: value
+  }
+}
