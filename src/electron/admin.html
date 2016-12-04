@@ -54,7 +54,7 @@
           node.addEventListener("click", function() {
             ipcRenderer.send("handle-answer", {
               player: node.dataset.player,
-              value: value,
+              value: value
             });
             document.getElementById("question").innerHTML = ""; 
             document.getElementById("answer").innerHTML = ""; 

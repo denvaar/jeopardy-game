@@ -21,7 +21,7 @@ class App extends Component {
     this.closeQuestion = this.closeQuestion.bind(this);
   
     ipcRenderer.on('update-score', (event, data) => {
-      this.props.updateScore(data.value, data.player);
+      this.props.updateScore(data.value, data.player, this.state.category, this.state.showQuestion);
       ipcRenderer.send("update-scoreboard", this.props.players);
       if (data.value > 0) {
         this.setState({showQuestion: false});
@@ -35,7 +35,7 @@ class App extends Component {
     let question = this.props.game.categories[category].find(question => {
       return question.value === value;
     });
-    this.setState({showQuestion: question });
+    this.setState({showQuestion: question, category: category });
 
     /* send answer to admin pannel */
     ipcRenderer.send('send-answer-to-admin', {...question, lastCorrectPlayer: this.props.lastCorrectPlayer});
