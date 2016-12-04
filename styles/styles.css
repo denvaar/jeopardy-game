@@ -16,21 +16,38 @@ body {
 }
 
 .setup-screen {
-  background: #1c0224;
-  color: #e4e4fe;
-  box-shadow: 0 0 5px #000000 inset;
+  background: #147bce;
+  color: #a6d7ff;
   text-shadow: 2px 2px #000;
   font-family: 'Gyparody Regular', sans-serif;
   font-size: 30px;
   height: 100%;
+  margin: -8px;
 }
 
 .setup-screen h1 {
   margin-top: 5px;
+  margin-bottom: 0;
+  font-size: 6em;
+}
+
+.setup-screen h2 {
+  margin-top: 5px;
 }
 
 .setup-screen .menu {
-  position: fixed;
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 75px;
+}
+
+.menu button {
+  margin-left: 10px;
+}
+
+.start-button, .start-button:hover {
+  background: #6bbb6b;
 }
 
 .game-container { 
@@ -96,15 +113,19 @@ button {
   margin-top: 10px;
   height: 35px;
   width: 100px;
-  background: #2196F3;
-  color: #fff;
+  background: #e7a646;
+  color: #383838;
   border: none;
   font-size: 14px;
   border-radius: 3px;
   -webkit-appearance: none;
 }
-button:hover { background: #757575; }
-button:hover { background: #3fa6ff; }
+button:hover { background: #f1ba69; }
+
+.disabled-button, .disabled-button:hover {
+  background: #757575;
+  cursor: default;
+}
 
 input[type="text"] {
   padding-left: 7px;
@@ -137,7 +158,41 @@ input[type="text"] {
   text-align: center;
   border: 1px solid #545454;
   border-radius: 2px;
-  margin-top: 50px;
+  bottom: 10px;
+  width: 97%;
+  position: absolute; 
+}
+
+.players-disabled {
+  pointer-events: none;
+  opacity: 0.2;
+}
+
+
+.player-text {
+  font-family: 'Permanent Marker', cursive;
+  margin: 0;
+  color: #fff;
+}
+
+.scoreboard .player-text {
+  border-bottom: 2px solid #f1ba69;
+  font-size: 20px;
+}
+
+.scoreboard .score {
+  font-family: 'Archivo Black', sans-serif;
+  font-size: 20px;
+  color: #fff;
+}
+
+.scoreboard .player {
+  background: #0d6bb6;
+  width: 180px;
+  box-shadow: 0 0 5px #000000 inset;
+  padding: 5px;
+  text-align: center;
+  margin: 3px;
 }
 
 .admin-pannel .current-question p {
@@ -174,4 +229,13 @@ input[type="text"] {
   color: #757575;
   background: #757575;
   pointer-events: none;
+}
+
+.message {
+  text-align: center;
+  height: 50px;
+  color: #2d612d;
+  margin: -10px;
+  line-height: 50px;
+  background: #58b158;
 }

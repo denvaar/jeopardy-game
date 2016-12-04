@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Scoreboard</title>
+    <link rel="stylesheet" href="../../styles/styles.css">
+    <link href="https://fonts.googleapis.com/css?family=Archivo+Black|Permanent+Marker" rel="stylesheet">
+  </head>
+  <body style="background: black;">
+    <div class="scoreboard"></div>
+    
+    <script>
+      var electron = require("electron");
+      var ipcRenderer = electron.ipcRenderer;
+      var remote = electron.remote;
+
+      ipcRenderer.on("launch-scoreboard", function(event, data) {
+        createScoreboard(data.players);
+      });
+
+      ipcRenderer.on("update-scoreboard", function(event, data) {
+        createScoreboard(data.players);
+      });
+
+      function createScoreboard(players) {
+        var scoreboard = document.querySelector(".scoreboard");
+        scoreboard.innerHTML = "";
+
+        players.forEach(function(p) {
+          var playerDiv = document.createElement("DIV");
+          playerDiv.innerHTML = `
+            <p class="player-text">${p.name}</p>
+            <p class="score">$ ${p.score}</p>
+          `;
+          playerDiv.classList.add("player");
+          scoreboard.appendChild(playerDiv);
+        });
+      }
+
+    </script>
+  
+  </body>
+</html>

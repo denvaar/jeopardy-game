@@ -20,11 +20,11 @@ class Players extends Component {
 
   render() {
     let players = this.props.players.map((player, index) => {
-      return (<p key={index}>{player.name}</p>);
+      return (<p className="player-text" key={index}>{player.name}</p>);
     });
     return (
       <div>
-        <h1>Players</h1>
+        <h2>Players</h2>
         {players}
         <input type="text" placeholder="Add player..." onKeyUp={this.handleInput}></input>
       </div>

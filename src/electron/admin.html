@@ -5,26 +5,34 @@
     <link rel="stylesheet" href="../../styles/styles.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css">
   </head>
-  <body style="background: #fff;">
+  <body style="margin: 0;background: #fff;">
+    
     <div class="admin-pannel">
+      <div class="message"> 
+        <i id="message"></i>
+      </div>
       <div class="current-question">
         <p id="question"></p>
         <i id="answer"></i>
-      <div>
-      <div class="players">
       </div>
+      <div class="players players-disabled"></div>
     </div>
+    
     <script>
       var electron = require('electron');
       var ipcRenderer = electron.ipcRenderer;
+      var remote = electron.remote;
       var value = 0;
+      
       ipcRenderer.on('send-answer-to-admin-reply', function(event, data) {
         document.getElementById('question').innerHTML = data.question;
         document.getElementById('answer').innerHTML = data.answer;
+        document.querySelector(".players").classList.remove("players-disabled");
         value = data.value;
       });
       
       ipcRenderer.on('launch-admin-pannel', function(event, data) {
+        document.getElementById("message").innerHTML = data.players[0] + " has control of the board";
         setupPlayers(data.players);
       });
 
@@ -37,27 +45,38 @@
             <span>${player}</span>
             <button data-player="${player}" class="incorrect-button"><i class="fa fa-times-circle fa-2x"></i></button>
           `;
+          playerDiv.classList.add("player");
           targetDiv.appendChild(playerDiv);
+          console.log(targetDiv);
         });
-        document.querySelectorAll(".correct-button").forEach(node => {
-          node.addEventListener("click", function(event) {
+
+        document.querySelectorAll(".correct-button").forEach(function(node) {
+          node.addEventListener("click", function() {
             ipcRenderer.send("handle-answer", {
-              player: this.dataset.player,
+              player: node.dataset.player,
               value: value,
-              type: 'CORRECT'
             });
+            document.getElementById("question").innerHTML = ""; 
+            document.getElementById("answer").innerHTML = ""; 
+            document.querySelectorAll(".player").forEach(function(playerDiv) {
+              playerDiv.classList.remove("players-disabled");
+            });
+            document.querySelector(".players").classList.add("players-disabled"); 
+            document.getElementById("message").innerHTML = node.dataset.player + " has control of the board";
           });
         });
-        document.querySelectorAll(".incorrect-button").forEach(node => {
-          node.addEventListener("click", function(event) {
+
+        document.querySelectorAll(".incorrect-button").forEach(function(node) {
+          node.addEventListener("click", function() {
             ipcRenderer.send("handle-answer", {
-              player: this.dataset.player,
-              value: value,
-              type: 'INCORRECT'
+              player: node.dataset.player,
+              value: value * -1,
             });
-            this.parentNode.innerHTML = this.dataset.player;
+            node.parentNode.classList.add("players-disabled");
+            document.getElementById("message").innerHTML = "---";
           });
         });
+      
       }
     </script>
   </body>

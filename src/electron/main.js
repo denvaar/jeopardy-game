@@ -20,25 +20,59 @@ app.on('ready', function() {
   mainWindow.openDevTools();
   mainWindow.on('closed', function() {
     mainWindow = null;
+    app.exit(0);
   });
 
   var adminWindow = new BrowserWindow({
+    x: 0,
+    y: 0,
     width: 500,
     height: 450,
-    show: true
+    closable: false,
+    show: false,
+    alwaysOnTop: true
   });
+
   adminWindow.loadURL('file://' + __dirname + '/admin.html');
   adminWindow.openDevTools();
+  
   ipc.on('send-answer-to-admin', function(event, args) {
     adminWindow.send('send-answer-to-admin-reply', {
       question: args.question,
       answer: args.answer,
-      value: args.value
+      value: args.value,
+      lastCorrectPlayer: args.lastCorrectPlayer
     });
   });
+  
   ipc.on('launch-admin-pannel', function(event, args) {
     adminWindow.send('launch-admin-pannel', {
       players: args.players
+    });
+    adminWindow.show();
+  });
+  
+  var scoreboardWindow = new BrowserWindow({
+    x: 50,
+    y: 50,
+    width: 300,
+    height: 400,
+    closable: false,
+    show: false,
+  });
+  
+  scoreboardWindow.loadURL('file://' + __dirname + '/scoreboard.html');
+
+  ipc.on("launch-scoreboard", function(event, args) {
+    scoreboardWindow.send("launch-scoreboard", {
+      players: args.players
+    });
+    scoreboardWindow.show();
+  });
+
+  ipc.on("update-scoreboard", function(event, args) {
+    scoreboardWindow.send("update-scoreboard", {
+      players: args
     });
   });
 
@@ -51,9 +85,6 @@ ipc.on('open-file-dialog', function(event, arg) {
 });
 
 ipc.on('handle-answer', function(event, args) {
-  console.log(args.player);
-  console.log(args.value);
-  console.log(args.type);
   mainWindow.send('update-score', args);
 });
 

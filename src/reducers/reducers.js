@@ -3,6 +3,7 @@ import {
   LOAD_GAME_DATA,
   ADD_PLAYER,
   UPDATE_SCORE,
+  UPDATE_LAST_CORRECT_PLAYER,
 } from '../actions/actions';
 
 const INITIAL_STATE = {
@@ -10,11 +11,18 @@ const INITIAL_STATE = {
     title: "",
     categories: {}
   },
-  players: []
+  players: [],
+  lastCorrectPlayer: ""
 };
 
 const appReducer = (state = INITIAL_STATE, action) => {
   switch (action.type) {
+    case UPDATE_LAST_CORRECT_PLAYER:
+      console.log("here", action);
+      return {
+        ...state,
+        lastCorrectPlayer: action.player
+      };
     case UPDATE_SCORE:
       let index = state.players.findIndex(player => {
         return player.name === action.player

@@ -7,8 +7,9 @@ class Question extends Component {
   }
 
   render() {
+    // <div className="question" onClick={() => {this.props.closeQuestion()} }>{this.props.question.question}</div>
     return (
-      <div className="question" onClick={() => {this.props.closeQuestion()} }>{this.props.question.question}</div>
+      <div className="question">{this.props.question.question}</div>
     );
   }
 }

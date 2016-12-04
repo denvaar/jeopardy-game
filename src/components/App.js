@@ -21,8 +21,11 @@ class App extends Component {
     this.closeQuestion = this.closeQuestion.bind(this);
   
     ipcRenderer.on('update-score', (event, data) => {
-      let value = (data.type === "CORRECT") ? data.value : data.value * -1;
-      this.props.updateScore(value, data.player);
+      this.props.updateScore(data.value, data.player);
+      ipcRenderer.send("update-scoreboard", this.props.players);
+      if (data.value > 0) {
+        this.setState({showQuestion: false});
+      }
     });
   
   }
@@ -35,7 +38,7 @@ class App extends Component {
     this.setState({showQuestion: question });
 
     /* send answer to admin pannel */
-    ipcRenderer.send('send-answer-to-admin', question);
+    ipcRenderer.send('send-answer-to-admin', {...question, lastCorrectPlayer: this.props.lastCorrectPlayer});
  
   }
 
@@ -65,7 +68,9 @@ class App extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    game: state.appReducer.game
+    game: state.appReducer.game,
+    players: state.appReducer.players,
+    lastCorrectPlayer: state.appReducer.lastCorrectPlayer
   };
 }
 

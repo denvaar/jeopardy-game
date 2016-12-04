@@ -4,37 +4,51 @@ import {ipcRenderer} from  'electron';
 
 import Players from './players';
 import { loadGameData } from '../actions/actions';
-import title from '../../img/title.jpg';
 
 
 class Setup extends Component {
   constructor(props) {
     super(props);
+    this.state = {
+      data: undefined
+    };
+    this.onStartGame = this.onStartGame.bind(this); 
+
     ipcRenderer.on('open-file-reply', (event, fileContents) => {
       if(fileContents){
-        var data = JSON.parse(fileContents);
-        this.props.loadGameData(data);
+        this.setState({
+          data: JSON.parse(fileContents)
+        });
       }
     }); 
+  }
+  
+  onLoadGame() {
+    ipcRenderer.send('open-file-dialog');
+  }
+
+  onStartGame() {
+    
+    ipcRenderer.send('launch-admin-pannel', {
+      players: this.props.players.map(player => {return player.name})
+    });
+    ipcRenderer.send("launch-scoreboard", {
+      players: this.props.players
+    });
+    
+    this.props.loadGameData(this.state.data);
   }
 
   render() {
     return (
       <div className="setup-screen">
-        <img className="title-img" src={title} ></img>
+        <h1>JEOPARDY!</h1>
         <Players />
         <div className="menu">
-          <div>
-            <button onClick={() => {ipcRenderer.send('open-file-dialog');} }>Load Game</button>
-          </div>
-          <div>
-            <button onClick={() => {console.log(this.props.game)}}>Create Game</button>
-          </div>
-          <div>
-            <button onClick={() => {ipcRenderer.send('launch-admin-pannel', {
-              players: this.props.players.map(player => {return player.name})
-            });}}>Launch Admin Pannel</button>
-          </div>
+          <button className={this.props.players.length > 1 ? "": "disabled-button"} onClick={this.onLoadGame}>Load Game</button>
+          <button className={this.state.data ? "": "disabled-button"}>Create Game</button>
+          <button className={this.state.data ? "": "disabled-button"} onClick={() => {console.log(this.props.game)}}>Edit Game</button>
+          <button className={this.state.data ? "start-button": "disabled-button"} onClick={this.onStartGame}>Play!</button>
         </div>
       </div>
     );

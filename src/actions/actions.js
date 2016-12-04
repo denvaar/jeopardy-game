@@ -1,6 +1,7 @@
 export const LOAD_GAME_DATA = "LOAD_GAME_DATA";
 export const ADD_PLAYER = "ADD_PLAYER";
 export const UPDATE_SCORE = "UPDATE_SCORE";
+export const UPDATE_LAST_CORRECT_PLAYER = "UPDATE_LAST_CORRECT_PLAYER";
 
 export const loadGameData = (data) => {
   return dispatch => {
@@ -31,8 +32,18 @@ const _addPlayer = (player) => {
 
 export const updateScore = (value, player) => {
   return dispatch => {
-    return dispatch(_updateScore(value, player));
+    dispatch(_updateScore(value, player));
+    if (value > 0) {
+      dispatch(_updateLastCorrectPlayer(player));
+    }
   }
+}
+
+const _updateLastCorrectPlayer = (player) => {
+  return {
+    type: UPDATE_LAST_CORRECT_PLAYER,
+    player: player
+  };
 }
 
 const _updateScore = (value, player) => {
