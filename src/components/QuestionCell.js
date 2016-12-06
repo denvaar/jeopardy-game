@@ -7,11 +7,11 @@ class QuestionCell extends Component {
   }
 
   render() {
-    return (
-      <td onClick={() => {this.props.openQuestion(this.props.category, this.props.value);} }>
-        ${this.props.value}
-      </td>
-    );
+    let markup = <td onClick={() => {this.props.openQuestion(this.props.category, this.props.value);} }>${this.props.value}</td>;
+    if (this.props.isAnswered) {
+      markup = <td></td>;
+    }
+    return markup;
   }
 }
 

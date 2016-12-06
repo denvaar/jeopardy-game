@@ -19,29 +19,25 @@ const INITIAL_STATE = {
 const appReducer = (state = INITIAL_STATE, action) => {
   switch (action.type) {
     case UPDATE_QUESTION:
-      const questionIndex = state.game.categories[categoryIndex].findIndex(question => {
-        return question.question === action.question;
+      const questionIndex = state.game.categories[action.categoryIndex].findIndex(question => {
+        return question.question === action.question.question;
       });
+      const categories = state.game.categories;
+      categories[action.categoryIndex][questionIndex] = {
+        ...state.game.categories[action.categoryIndex][questionIndex],
+        isAnswered: true
+      };
       return {
         ...state,
         game: {
           ...state.game,
           categories: {
             ...state.game.categories,
-            /*state.game.categories[action.categoryIndex]: [
-              //...state.game.categories[action.categoryIndex],
-              ...state.game.categories[action.categoryIndex].slice(0, questionIndex),
-              {
-                ...state.game.categories[action.categoryIndex][questionIndex],
-                isAnswered: true
-              },
-              ...state.game.categories[action.categoryIndex].slice(index + 1)
-            ]*/
+            ...categories
           }
         }
       };
     case UPDATE_LAST_CORRECT_PLAYER:
-      console.log("here", action);
       return {
         ...state,
         lastCorrectPlayer: action.player
