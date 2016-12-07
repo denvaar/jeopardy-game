@@ -36,8 +36,8 @@ export const updateScore = (value, player, categoryIndex, question) => {
     dispatch(_updateScore(value, player));
     if (value > 0) {
       dispatch(_updateLastCorrectPlayer(player));
-      dispatch(_updateQuestion(categoryIndex, question));
     }
+    dispatch(_updateQuestion(categoryIndex, question));
   }
 }
 

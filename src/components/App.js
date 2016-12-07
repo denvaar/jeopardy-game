@@ -23,7 +23,7 @@ class App extends Component {
     ipcRenderer.on('update-score', (event, data) => {
       this.props.updateScore(data.value, data.player, this.state.category, this.state.showQuestion);
       ipcRenderer.send("update-scoreboard", this.props.players);
-      if (data.value > 0) {
+      if (data.value >= 0) {
         this.setState({showQuestion: false});
       }
     });

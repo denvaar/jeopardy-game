@@ -15,6 +15,7 @@
         <p id="question"></p>
         <i id="answer"></i>
       </div>
+      <button id="noAnswer" style="float:right">No answer</button>
       <div class="players players-disabled"></div>
     </div>
     
@@ -23,12 +24,15 @@
       var ipcRenderer = electron.ipcRenderer;
       var remote = electron.remote;
       var value = 0;
-      
+      var totalPlayers = 0;
+      var playersLeft = 0;
+
       ipcRenderer.on('send-answer-to-admin-reply', function(event, data) {
         document.getElementById('question').innerHTML = data.question;
         document.getElementById('answer').innerHTML = data.answer;
         document.querySelector(".players").classList.remove("players-disabled");
         value = data.value;
+        playersLeft = totalPlayers;
       });
       
       ipcRenderer.on('launch-admin-pannel', function(event, data) {
@@ -39,6 +43,7 @@
       function setupPlayers(players) {
         var targetDiv = document.querySelector(".players");
         players.forEach(player => {
+          totalPlayers += 1;
           var playerDiv = document.createElement("DIV");
           playerDiv.innerHTML = `
             <button data-player="${player}" class="correct-button"><i class="fa fa-check-circle fa-2x"></i></button>
@@ -47,9 +52,21 @@
           `;
           playerDiv.classList.add("player");
           targetDiv.appendChild(playerDiv);
-          console.log(targetDiv);
         });
 
+        document.getElementById("noAnswer").addEventListener("click", function() {
+          ipcRenderer.send("handle-answer", {
+            player: document.querySelector(".correct-button").dataset.player,
+            value: 0
+          });
+          document.getElementById("question").innerHTML = ""; 
+          document.getElementById("answer").innerHTML = ""; 
+          document.querySelectorAll(".player").forEach(function(playerDiv) {
+            playerDiv.classList.remove("players-disabled");
+          });
+          document.querySelector(".players").classList.add("players-disabled"); 
+        });
+        
         document.querySelectorAll(".correct-button").forEach(function(node) {
           node.addEventListener("click", function() {
             ipcRenderer.send("handle-answer", {
@@ -74,6 +91,20 @@
             });
             node.parentNode.classList.add("players-disabled");
             document.getElementById("message").innerHTML = "---";
+            playersLeft -= 1;
+            if (playersLeft === 0) {
+              ipcRenderer.send("handle-answer", {
+                player: node.dataset.player,
+                value: 0,
+              });
+              document.getElementById("question").innerHTML = ""; 
+              document.getElementById("answer").innerHTML = ""; 
+              document.querySelectorAll(".player").forEach(function(playerDiv) {
+                playerDiv.classList.remove("players-disabled");
+              });
+              document.querySelector(".players").classList.add("players-disabled"); 
+              document.getElementById("message").innerHTML = node.dataset.player + " has control of the board";
+            }
           });
         });
       
