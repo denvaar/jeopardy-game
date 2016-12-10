@@ -88,6 +88,20 @@ ipc.on('handle-answer', function(event, args) {
   mainWindow.send('update-score', args);
 });
 
+ipc.on('save-file-dialog', function(event, arg) {
+  dialog.showSaveDialog(function(fileName) {
+    if (fileName) {
+      fs.writeFile(fileName, arg.data, function(error) {
+        if (error) {
+          alert('Something went wrong while trying to save the file: ' + erorr.message);
+        }
+      });
+    } else {
+      return;
+    }
+  });
+});
+
 
 function readFile(path) {
   return fs.readFileSync(path, "utf-8");

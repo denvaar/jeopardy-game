@@ -4,6 +4,11 @@ export const UPDATE_SCORE = "UPDATE_SCORE";
 export const UPDATE_LAST_CORRECT_PLAYER = "UPDATE_LAST_CORRECT_PLAYER";
 export const UPDATE_QUESTION = "UPDATE_QUESTION";
 
+
+export const saveGame = () => {
+
+}
+
 export const loadGameData = (data) => {
   return dispatch => {
     return dispatch(_loadGameData(data));

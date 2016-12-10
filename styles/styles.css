@@ -112,7 +112,7 @@ button {
   cursor: pointer;
   margin-top: 10px;
   height: 35px;
-  width: 100px;
+  min-width: 100px;
   background: #e7a646;
   color: #383838;
   border: none;
@@ -238,4 +238,33 @@ input[type="text"] {
   margin: -10px;
   line-height: 50px;
   background: #58b158;
+}
+
+.edit-screen {
+  background: #fff;
+  font-family: 'Archivo Black', sans-serif;
+}
+
+.edit-screen input {
+  width: 300px;
+}
+
+.question-buttons {
+  padding: 10px 0 5px 0;
+}
+
+.edit-question {
+  border-radius: 2px;
+  margin: 5px;
+  cursor: pointer;
+  text-align: center;
+  padding: 5px;
+  background: #147bce;
+  color: #a6d7ff;
+}
+
+.edit-screen .category-section {
+  text-align: center;
+  padding: 10px;
+  background: #ddd;
 }

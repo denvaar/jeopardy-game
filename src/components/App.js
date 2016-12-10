@@ -67,6 +67,7 @@ class App extends Component {
 }
 
 const mapStateToProps = (state) => {
+  console.log(state.appReducer.game.categories);
   return {
     game: state.appReducer.game,
     players: state.appReducer.players,
