@@ -50,23 +50,9 @@ class Edit extends Component {
           }
         },
         finalJeopardy: {
-          categories: {
-            0: [
-              {value: 200}, {value: 400}, {value: 600}, {value: 800}, {value: 1000}
-            ],
-            1: [
-              {value: 200}, {value: 400}, {value: 600}, {value: 800}, {value: 1000}
-            ],
-            2: [
-              {value: 200}, {value: 400}, {value: 600}, {value: 800}, {value: 1000}
-            ],
-            3: [
-              {value: 200}, {value: 400}, {value: 600}, {value: 800}, {value: 1000}
-            ],
-            4: [
-              {value: 200}, {value: 400}, {value: 600}, {value: 800}, {value: 1000}
-            ]
-          }
+          category: "",
+          question: "",
+          answer: ""
         }
       }
     };
@@ -103,12 +89,14 @@ class Edit extends Component {
   }
 
   handleTabSwitch(tab) {
-    let category = this.state.game[tab].categories[0].category;
-    for (let i = 0; i < 5; i++) {
-      if (category) {
-        this.refs["categoryInput" + i].value = category;
-      } else {
-        this.refs["categoryInput" + i].value = "";
+    if (tab != "finalJeopardy" && this.state.currentTab != "finalJeopardy") {
+      for (let i = 0; i < 5; i++) {
+        let category = this.state.game[tab].categories[i][0].category;
+        if (category) {
+          this.refs["categoryInput" + i].value = category;
+        } else {
+          this.refs["categoryInput" + i].value = "";
+        }
       }
     }
     this.setState({currentTab: tab});
@@ -118,7 +106,6 @@ class Edit extends Component {
     this.setState({
       editingQuestion: {categoryId: categoryIndex, questionId: index}
     });
-    //hashHistory.push(`/edit/${categoryIndex}/${index}`);
   }
 
   saveQuestion(data) {
@@ -143,28 +130,94 @@ class Edit extends Component {
   }
 
   render() {
-    if (this.state.editingQuestion) { 
+    if (this.state.editingQuestion && this.state.currentTab != "finalJeopardy") { 
       var questionObj = this.state.game[this.state.currentTab].categories[this.state.editingQuestion.categoryId][this.state.editingQuestion.questionId];
     }
 
-    let categories = Object.keys(this.state.game[this.state.currentTab].categories).map((categoryId, i) => {
-      let categoryName = this.state.game[this.state.currentTab].categories[categoryId].find(cat => {
-        return cat.category != "";
+    if (this.state.currentTab != "finalJeopardy") {
+      var categories = Object.keys(this.state.game[this.state.currentTab].categories).map((categoryId, i) => {
+        let categoryName = this.state.game[this.state.currentTab].categories[categoryId].find(cat => {
+          return cat.category != "";
+        });
+        return (
+          <div key={i} className="category-section">
+            <input defaultValue={categoryName ? categoryName.category : ""}
+                   placeholder="Category title"
+                   className={categoryName.category ? "" : "blink"}
+                   id={"categoryInput" + categoryId}
+                   ref={"categoryInput" + categoryId}
+                   type="text"
+                   onChange={(event) => {this.updateCategory(categoryId, event.target.value)}} />
+            <Questions editQuestion={this.editQuestion}
+                       categoryIndex={categoryId}
+                       questions={this.state.game[this.state.currentTab].categories[categoryId]} />
+          </div>
+        );
       });
-      return (
-        <div key={i} className="category-section">
-          <input defaultValue={categoryName ? categoryName.category : ""}
-                 placeholder="Category title"
-                 id={"categoryInput" + categoryId}
-                 ref={"categoryInput" + categoryId}
-                 type="text"
-                 onChange={(event) => {this.updateCategory(categoryId, event.target.value)}} />
-          <Questions editQuestion={this.editQuestion}
-                     categoryIndex={categoryId}
-                     questions={this.state.game[this.state.currentTab].categories[categoryId]} />
+    } else { 
+      var categories = (
+        <div>
+          <div>
+            <input defaultValue={this.state.game.finalJeopardy.category}
+                   placeholder="Final Jeopardy category"
+                   className={this.state.game.finalJeopardy.category ? this.state.game.finalJeopardy.category : "blink"}
+                   type="text"
+                   onChange={
+                     (event) => {
+                       this.setState({
+                         game: {
+                           ...this.state.game,
+                           finalJeopardy: {
+                             ...this.state.game.finalJeopardy,
+                             category: event.target.value
+                           }
+                         }
+                       });
+                     }
+                   } />
+          </div>
+          <div>
+            <textarea defaultValue={this.state.game.finalJeopardy.question}
+                      placeholder="Final Jeopardy question"
+                      className={this.state.game.finalJeopardy.question ? this.state.game.finalJeopardy.question : "blink"}
+                      style={{height: 50+"px", width: 300+"px"}}
+                      onChange={
+                        (event) => {
+                           this.setState({
+                             game: {
+                               ...this.state.game,
+                               finalJeopardy: {
+                                 ...this.state.game.finalJeopardy,
+                                 question: event.target.value
+                               }
+                             }
+                           });
+                        }
+                      } />
+          </div>
+          <div>
+            <input defaultValue={this.state.game.finalJeopardy.answer}
+                   placeholder="Final Jeopardy answer"
+                   className={this.state.game.finalJeopardy.answer ? this.state.game.finalJeopardy.answer : "blink"}
+                   type="text"
+                   onChange={
+                     (event) => {
+                       this.setState({
+                         game: {
+                           ...this.state.game,
+                           finalJeopardy: {
+                             ...this.state.game.finalJeopardy,
+                             answer: event.target.value
+                           }
+                         }
+                       });
+                     }
+                   } />
+          </div>
         </div>
       );
-    });
+
+    }
 
     return (
       <div className="edit-screen">
@@ -205,17 +258,17 @@ class Edit extends Component {
               <div className="tab-container">
                 <span className="tab"
                       style={this.state.currentTab === "jeopardy" ? {borderBottom: 5+"px solid #147bce"} : null}
-                      onClick={this.handleTabSwitch("jeopardy")}>
+                      onClick={() => {this.handleTabSwitch("jeopardy")}}>
                   Jeopardy
                 </span>
                 <span className="tab"
                       style={this.state.currentTab === "doubleJeopardy" ? {borderBottom: 5+"px solid #147bce"} : null}
-                      onClick={this.handleTabSwitch("doubleJeopardy")}>
+                      onClick={() => {this.handleTabSwitch("doubleJeopardy")}}>
                   Double Jeopardy
                 </span>
                 <span className="tab"
                       style={this.state.currentTab === "finalJeopardy" ? {borderBottom: 5+"px solid #147bce"} : null}
-                      onClick={this.handleTabSwitch("finalJeopardy")}>
+                      onClick={() => {this.handleTabSwitch("finalJeopardy")}}>
                   Final Jeopardy
                 </span>
               </div>
@@ -239,7 +292,7 @@ export default connect(mapStateToProps, { })(Edit);
 
 const Questions = ({ categoryIndex, questions, editQuestion }) => {
   let vals = questions.map((question, i) => {
-    return <span className="edit-question"
+    return <span className={question.question && question.answer ? "edit-question" : "edit-question blink"}
                  onClick={() => {editQuestion(categoryIndex, i)}}
                  key={i}>
              ${question.value}
