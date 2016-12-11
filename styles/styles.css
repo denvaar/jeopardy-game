@@ -7,9 +7,6 @@
   src: url('Korinna Bold.ttf');
 } 
 
-body {
-  background: black;
-}
 
 .title-img {
   width: 100%;
@@ -18,8 +15,9 @@ body {
 .setup-screen {
   background: #147bce;
   color: #a6d7ff;
-  text-shadow: 2px 2px #000;
+  text-shadow: 2px 2px #004e8c;
   font-family: 'Gyparody Regular', sans-serif;
+  text-align: center;
   font-size: 30px;
   height: 100%;
   margin: -8px;
@@ -55,6 +53,8 @@ body {
   width: 100%;
   text-align: center;
   height: 100%;
+  background: #000;
+  margin: -8px;
 }
 
 .category {
@@ -111,6 +111,7 @@ td:hover {
 button {
   cursor: pointer;
   margin-top: 10px;
+  margin-right: 5px;
   height: 35px;
   min-width: 100px;
   background: #e7a646;
@@ -127,7 +128,7 @@ button:hover { background: #f1ba69; }
   cursor: default;
 }
 
-input[type="text"] {
+input[type="text"], textarea {
   padding-left: 7px;
   height: 25px;
   border-radius: 4px;
@@ -243,6 +244,8 @@ input[type="text"] {
 .edit-screen {
   background: #fff;
   font-family: 'Archivo Black', sans-serif;
+  text-align: center;
+  height: 100%;
 }
 
 .edit-screen input {
@@ -261,10 +264,55 @@ input[type="text"] {
   padding: 5px;
   background: #147bce;
   color: #a6d7ff;
+  width: 85px;
+  display: inline-block;
 }
 
 .edit-screen .category-section {
   text-align: center;
   padding: 10px;
+}
+
+.tab-container {
+  border-bottom: 5px solid #ddd;
+}
+.tab {
+  margin-right: 10px;
+  text-transform: uppercase;
+  cursor: pointer;
+  padding: 3px 3px 0 3px;
+  color: #545454;
+}
+.tab:hover {
+  background: aliceblue;
+  color: #0d6bb6;
+}
+
+.cancel {
   background: #ddd;
+}
+.cancel:hover {
+  background: #ddd !important;
+}
+
+.edit-screen h4 {
+  text-transform: uppercase;
+}
+
+.back-button {
+  position: fixed;
+  background: #a6d7ff;
+  top: 10px;
+  cursor: pointer;
+  left: 10px;
+  line-height: 90px;
+  text-align: center;
+  border-radius: 50%;
+  color: #fff;
+  height: 90px;
+  width: 90px;
+  box-shadow: 0 0 17px #757575;
+}
+.back-button:hover {
+  background: #8ec2ec;
 }

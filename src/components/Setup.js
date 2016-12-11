@@ -67,9 +67,8 @@ class Setup extends Component {
             <h1>JEOPARDY!</h1>
             <Players />
             <div className="menu">
-              <button className={this.props.players.length > 1 ? "": "disabled-button"} onClick={this.onLoadGame}>Load Game</button>
-              <button onClick={this.createGame}>Create Game</button>
-              <button className={this.state.data ? "": "disabled-button"} onClick={() => {console.log(this.props.game)}}>Edit Game</button>
+              <button onClick={this.onLoadGame}>Load Game</button>
+              <button onClick={this.createGame}>Create/Edit Game</button>
               <button className={this.state.data ? "start-button": "disabled-button"} onClick={this.onStartGame}>Play!</button>
             </div>
           </div>

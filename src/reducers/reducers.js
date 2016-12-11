@@ -9,8 +9,19 @@ import {
 
 const INITIAL_STATE = {
   game: {
-    title: "",
-    categories: {}
+    jeopardy: {
+      categories: {
+
+      }
+    },
+    doubleJeopardy: {
+      categories: {
+
+      }
+    },
+    finalJeopardy: {
+      
+    }
   },
   players: [],
   lastCorrectPlayer: ""

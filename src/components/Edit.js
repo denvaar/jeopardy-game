@@ -9,8 +9,47 @@ class Edit extends Component {
     super(props);
     this.state = {
       editingQuestion: null,
+      currentTab: "jeopardy",
       game: {
         jeopardy: {
+          categories: {
+            0: [
+              {value: 200}, {value: 400}, {value: 600}, {value: 800}, {value: 1000}
+            ],
+            1: [
+              {value: 200}, {value: 400}, {value: 600}, {value: 800}, {value: 1000}
+            ],
+            2: [
+              {value: 200}, {value: 400}, {value: 600}, {value: 800}, {value: 1000}
+            ],
+            3: [
+              {value: 200}, {value: 400}, {value: 600}, {value: 800}, {value: 1000}
+            ],
+            4: [
+              {value: 200}, {value: 400}, {value: 600}, {value: 800}, {value: 1000}
+            ]
+          }
+        },
+        doubleJeopardy: {
+          categories: {
+            0: [
+              {value: 400}, {value: 800}, {value: 1200}, {value: 1600}, {value: 2000}
+            ],
+            1: [
+              {value: 400}, {value: 800}, {value: 1200}, {value: 1600}, {value: 2000}
+            ],
+            2: [
+              {value: 400}, {value: 800}, {value: 1200}, {value: 1600}, {value: 2000}
+            ],
+            3: [
+              {value: 400}, {value: 800}, {value: 1200}, {value: 1600}, {value: 2000}
+            ],
+            4: [
+              {value: 400}, {value: 800}, {value: 1200}, {value: 1600}, {value: 2000}
+            ]
+          }
+        },
+        finalJeopardy: {
           categories: {
             0: [
               {value: 200}, {value: 400}, {value: 600}, {value: 800}, {value: 1000}
@@ -33,35 +72,46 @@ class Edit extends Component {
     };
     this.handleSave = this.handleSave.bind(this);
     this.updateCategory = this.updateCategory.bind(this);
+    this.handleTabSwitch = this.handleTabSwitch.bind(this);
     this.editQuestion = this.editQuestion.bind(this);
   }
 
   handleSave() {
     console.log(JSON.stringify(this.state.game));
     ipcRenderer.send('save-file-dialog', {data: JSON.stringify(this.state.game)});
-    //this.props.saveGame(
-    //hashHistory.push("/setup");
   }
 
   updateCategory(index, value) {
-    let questions = this.state.game.jeopardy.categories[index].map(question => {
+    let questions = this.state.game[this.state.currentTab].categories[index].map(question => {
       return {...question, category: value};
     });
-    let categories = this.state.game.jeopardy.categories;
+    let categories = this.state.game[this.state.currentTab].categories;
     categories[index] = questions;
 
     this.setState({
       game: {
         ...this.state.game,
-        jeopardy: {
-          ...this.state.game.jeopardy,
+        [this.state.currentTab]: {
+          ...this.state.game[this.state.currentTab],
           categories: {
-            ...this.state.game.jeopardy.categories,
+            ...this.state.game[this.state.currentTab].categories,
             ...categories
           }
         }
       }
     });
+  }
+
+  handleTabSwitch(tab) {
+    let category = this.state.game[tab].categories[0].category;
+    for (let i = 0; i < 5; i++) {
+      if (category) {
+        this.refs["categoryInput" + i].value = category;
+      } else {
+        this.refs["categoryInput" + i].value = "";
+      }
+    }
+    this.setState({currentTab: tab});
   }
 
   editQuestion(categoryIndex, index) {
@@ -73,16 +123,16 @@ class Edit extends Component {
 
   saveQuestion(data) {
 
-    let categories = this.state.game.jeopardy.categories;
+    let categories = this.state.game[this.state.currentTab].categories;
     categories[this.state.editingQuestion.categoryId][this.state.editingQuestion.questionId] = data;
 
     this.setState({
       game: {
         ...this.state.game,
-        jeopardy: {
-          ...this.state.game.jeopardy,
+        [this.state.currentTab]: {
+          ...this.state.game[this.state.currentTab],
           categories: {
-            ...this.state.game.jeopardy.categories,
+            ...this.state.game[this.state.currentTab].categories,
             ...categories
           }
         }
@@ -94,22 +144,24 @@ class Edit extends Component {
 
   render() {
     if (this.state.editingQuestion) { 
-      var questionObj = this.state.game.jeopardy.categories[this.state.editingQuestion.categoryId][this.state.editingQuestion.questionId];
+      var questionObj = this.state.game[this.state.currentTab].categories[this.state.editingQuestion.categoryId][this.state.editingQuestion.questionId];
     }
 
-    let categories = Object.keys(this.state.game.jeopardy.categories).map((categoryId, i) => {
-      let categoryName = this.state.game.jeopardy.categories[categoryId].find(cat => {
+    let categories = Object.keys(this.state.game[this.state.currentTab].categories).map((categoryId, i) => {
+      let categoryName = this.state.game[this.state.currentTab].categories[categoryId].find(cat => {
         return cat.category != "";
       });
       return (
         <div key={i} className="category-section">
           <input defaultValue={categoryName ? categoryName.category : ""}
                  placeholder="Category title"
+                 id={"categoryInput" + categoryId}
+                 ref={"categoryInput" + categoryId}
                  type="text"
                  onChange={(event) => {this.updateCategory(categoryId, event.target.value)}} />
           <Questions editQuestion={this.editQuestion}
                      categoryIndex={categoryId}
-                     questions={this.state.game.jeopardy.categories[categoryId]} />
+                     questions={this.state.game[this.state.currentTab].categories[categoryId]} />
         </div>
       );
     });
@@ -118,9 +170,9 @@ class Edit extends Component {
       <div className="edit-screen">
       {this.state.editingQuestion &&
             <div>
-              <h4>{questionObj.category} -- ${questionObj.value}</h4>
+              <h4>{questionObj.category ? questionObj.category : <i>untitled category</i>} -- ${questionObj.value}</h4>
               <div>
-                <textarea defaultValue={questionObj.question} id="question" ref="question" placeholder="Question" ></textarea>
+                <textarea defaultValue={questionObj.question} style={{height: 50+"px", width: 300+"px"}} id="question" ref="question" placeholder="Question" />
               </div>
               <div>
                 <input defaultValue={questionObj.answer} id="answer" ref="answer" type="text" placeholder="Answer" />
@@ -131,25 +183,44 @@ class Edit extends Component {
               <div>
                 <input id="imageLink" ref="imageLink" type="text" placeholder="Image link" />
               </div>
-              <button onClick={() => {
-                let data = {
-                  value: questionObj.value,
-                  category: questionObj.category,
-                  question: this.refs.question.value,
-                  answer: this.refs.answer.value,
-                  youtubeLink: this.refs.youtubeLink.value,
-                  imageLink: this.refs.imageLink.value
-                };
-                this.saveQuestion(data);
-              }}>Save Question</button>
+              <button className="cancel" onClick={() => {this.setState({editingQuestion: false}) }}>Cancel</button>
+              <button className="start-button"
+                      onClick={() => {
+                      let data = {
+                        value: questionObj.value,
+                        category: questionObj.category,
+                        question: this.refs.question.value,
+                        answer: this.refs.answer.value,
+                        youtubeLink: this.refs.youtubeLink.value,
+                        imageLink: this.refs.imageLink.value
+                      };
+                      this.saveQuestion(data);
+                    }}>Save Question</button>
             </div>
 
       }
       {!this.state.editingQuestion &&
             <div>
-              <h2>Edit Jeopardy Categories</h2>
+              <span className="back-button" onClick={() => {hashHistory.push("/")}}>MENU</span>
+              <div className="tab-container">
+                <span className="tab"
+                      style={this.state.currentTab === "jeopardy" ? {borderBottom: 5+"px solid #147bce"} : null}
+                      onClick={this.handleTabSwitch("jeopardy")}>
+                  Jeopardy
+                </span>
+                <span className="tab"
+                      style={this.state.currentTab === "doubleJeopardy" ? {borderBottom: 5+"px solid #147bce"} : null}
+                      onClick={this.handleTabSwitch("doubleJeopardy")}>
+                  Double Jeopardy
+                </span>
+                <span className="tab"
+                      style={this.state.currentTab === "finalJeopardy" ? {borderBottom: 5+"px solid #147bce"} : null}
+                      onClick={this.handleTabSwitch("finalJeopardy")}>
+                  Final Jeopardy
+                </span>
+              </div>
               {categories}
-              <button onClick={this.handleSave}>Save</button>
+              <button className="start-button" onClick={this.handleSave}>Save...</button>
             </div>
       }
       </div>
@@ -172,7 +243,7 @@ const Questions = ({ categoryIndex, questions, editQuestion }) => {
                  onClick={() => {editQuestion(categoryIndex, i)}}
                  key={i}>
              ${question.value}
-             {(question.question && question.answer) ? <i className="fa fa-check" style={{color: "#67d067"}}></i> : null }
+             {(question.question && question.answer) ? <span>&nbsp;<i className="fa fa-check" style={{color: "#67d067"}}></i></span> : null }
            </span>
   });
   return (
