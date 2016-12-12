@@ -32,7 +32,7 @@ class App extends Component {
 
   openQuestion(category, value) {
 
-    let question = this.props.game.categories[category].find(question => {
+    let question = this.props.game[this.props.currentVersion].categories[category].find(question => {
       return question.value === value;
     });
     this.setState({showQuestion: question, category: category });
@@ -47,7 +47,7 @@ class App extends Component {
   }
 
   render() {
-    let showGame = (Object.keys(this.props.game.categories).length > 0);
+    let showGame = (Object.keys(this.props.game[this.props.currentVersion].categories).length > 0);
     let showQuestion = this.state.showQuestion;
     return (
       <div className="game-container">
@@ -55,9 +55,15 @@ class App extends Component {
         {showGame && !showQuestion &&
         <table>
           <thead>
-            <Categories data={this.props.game.categories} />
+            <Categories data={
+              (() => {
+                return Object.keys(this.props.game[this.props.currentVersion].categories).map(catId => {
+                  console.log('--', this.props.game[this.props.currentVersion].categories[catId][0].category);
+                  return this.props.game[this.props.currentVersion].categories[catId][0].category;
+                });
+              })()} />
           </thead>
-          <RowContainer categories={this.props.game.categories} openQuestion={this.openQuestion} />
+          <RowContainer categories={this.props.game[this.props.currentVersion].categories} openQuestion={this.openQuestion} />
         </table>
         }
         { showQuestion && <Question question={this.state.showQuestion} closeQuestion={this.closeQuestion} />}
@@ -67,11 +73,12 @@ class App extends Component {
 }
 
 const mapStateToProps = (state) => {
-  console.log(state.appReducer.game.categories);
+  console.log(state.appReducer.game);
   return {
     game: state.appReducer.game,
     players: state.appReducer.players,
-    lastCorrectPlayer: state.appReducer.lastCorrectPlayer
+    lastCorrectPlayer: state.appReducer.lastCorrectPlayer,
+    currentVersion: state.appReducer.currentVersion
   };
 }
 

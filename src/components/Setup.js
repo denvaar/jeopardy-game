@@ -52,16 +52,6 @@ class Setup extends Component {
   render() {
     return (
       <div className="setup-screen">
-        {this.state.creatingGame &&
-          <div>
-            <h2>Jeopardy Categories</h2>
-            
-            <div className="menu">
-              <button>Save...</button>
-              <button>Double Jeopardy <i className="fa fa-arrow-right"></i></button>
-            </div>
-          </div>
-        }
         {!this.state.creatingGame &&
           <div>
             <h1>JEOPARDY!</h1>

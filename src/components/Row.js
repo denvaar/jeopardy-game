@@ -11,9 +11,10 @@ class Row extends Component {
 
   render() {
     let cells = [];
-    for (let i = 0; i < 6; i++) {
-      let category = Object.keys(this.props.categories)[i];
-      let isAnswered = this.props.categories[category].find(q => {return q.value === this.props.value }).isAnswered;
+    for (let i = 0; i < 5; i++) {
+      let category = this.props.categories[i][0].category;
+      console.log(category)
+      let isAnswered = Object.keys(this.props.categories[i]).find(q => {return this.props.categories[i][q].value === this.props.value }).isAnswered;
       cells.push(
         <QuestionCell key={i}
                       value={this.props.value}
@@ -31,8 +32,11 @@ class Row extends Component {
 }
 
 const mapStateToProps = (state) => {
+  let currentVersion = state.appReducer.currentVersion;
+
   return {
-    categories: state.appReducer.game.categories        
+    categories: state.appReducer.game[currentVersion].categories,
+    currentVersion: currentVersion
   };
 }
 

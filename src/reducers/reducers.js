@@ -24,27 +24,31 @@ const INITIAL_STATE = {
     }
   },
   players: [],
-  lastCorrectPlayer: ""
+  lastCorrectPlayer: "",
+  currentVersion: "jeopardy"
 };
 
 const appReducer = (state = INITIAL_STATE, action) => {
   switch (action.type) {
     case UPDATE_QUESTION:
-      const questionIndex = state.game.categories[action.categoryIndex].findIndex(question => {
+      const questionIndex = state.game[state.currentVersion].categories[action.categoryIndex].findIndex(question => {
         return question.question === action.question.question;
       });
-      const categories = state.game.categories;
+      const categories = state.game[state.currentVersion].categories;
       categories[action.categoryIndex][questionIndex] = {
-        ...state.game.categories[action.categoryIndex][questionIndex],
+        ...state.game[state.currentVersion].categories[action.categoryIndex][questionIndex],
         isAnswered: true
       };
       return {
         ...state,
         game: {
           ...state.game,
-          categories: {
-            ...state.game.categories,
-            ...categories
+          [state.currentVersion]: {
+            ...state.game[state.currentVersion],
+            categories: {
+              ...state.game[state.currentVersion].categories
+              //...categories
+            }
           }
         }
       };
@@ -83,10 +87,7 @@ const appReducer = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         game: {
-          title: "Music",
-          categories: {
-            ...action.data.categories
-          }
+          ...action.data
         }
       };
     default:

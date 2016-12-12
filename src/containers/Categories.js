@@ -7,7 +7,7 @@ class Categories extends Component {
   }
 
   render() {
-    let categories = Object.keys(this.props.data).map((category, i) => {
+    let categories = this.props.data.map((category, i) => {
       return (
         <th key={i}>{category}</th>
       );
