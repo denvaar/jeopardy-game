@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import {ipcRenderer} from  'electron';
+import { hashHistory } from 'react-router';
 
 import Setup from './Setup';
 import Row from './Row';
@@ -8,7 +9,7 @@ import Question from './Question';
 import Categories from '../containers/Categories';
 import RowContainer from '../containers/RowContainer';
 
-import { updateScore } from '../actions/actions';
+import { updateScore, setCurrentVersion } from '../actions/actions';
 
 
 class App extends Component {
@@ -18,11 +19,32 @@ class App extends Component {
       showQuestion: false
     };
     this.openQuestion = this.openQuestion.bind(this);
-    this.closeQuestion = this.closeQuestion.bind(this);
+    /*this.closeQuestion = this.closeQuestion.bind(this);*/
   
     ipcRenderer.on('update-score', (event, data) => {
       this.props.updateScore(data.value, data.player, this.state.category, this.state.showQuestion);
       ipcRenderer.send("update-scoreboard", this.props.players);
+    
+      let done = true;
+      for (let i = 0; i < 5; i++) {
+        this.props.game[this.props.currentVersion].categories[i].forEach(obj => {
+          if (!obj.isAnswered) {
+            done = false;
+          }
+        });
+      }
+      
+      if (done) {
+        let dict = ({
+          jeopardy: 0,
+          //doubleJeopardy: 1,
+          finalJeopardy: 1
+        });
+        let nextVersion = dict[this.props.currentVersion] + 1 
+        this.props.setCurrentVersion(Object.keys(dict)[nextVersion]);
+        hashHistory.push("/play/finalJeopardy");
+      }
+      
       if (data.value >= 0) {
         this.setState({showQuestion: false});
       }
@@ -42,28 +64,53 @@ class App extends Component {
  
   }
 
+  /*
   closeQuestion() {
+    // check the board if it's done.
+    console.log('here')
+    let done = true;
+    for (let i = 0; i < 5; i++) {
+      this.props.game[this.props.currentVersion].categories[i].forEach(obj => {
+        if (!obj.isAnswered) {
+          done = false;
+        }
+      });
+    }
+    
+    //if (done) {
+      let nextVersion = ({
+        jeopardy: 0,
+        doubleJeopardy: 1,
+        finalJeopardy: 2
+      })[this.props.currentVersion] + 1;
+      console.log(Object.keys(nextVersion)[nextVersion]);
+      this.props.setCurrentVersion(Object.keys(nextVersion)[nextVersion]);
+
+    //}
+
     this.setState({showQuestion: false });
   }
+  */
 
   render() {
+    if (this.props.currentVersion === "finalJeopardy") return <div></div>;
     let showGame = (Object.keys(this.props.game[this.props.currentVersion].categories).length > 0);
     let showQuestion = this.state.showQuestion;
     return (
       <div className="game-container">
-        {!showGame && !showQuestion && <Setup />}
         {showGame && !showQuestion &&
         <table>
           <thead>
             <Categories data={
               (() => {
                 return Object.keys(this.props.game[this.props.currentVersion].categories).map(catId => {
-                  console.log('--', this.props.game[this.props.currentVersion].categories[catId][0].category);
                   return this.props.game[this.props.currentVersion].categories[catId][0].category;
                 });
               })()} />
           </thead>
-          <RowContainer categories={this.props.game[this.props.currentVersion].categories} openQuestion={this.openQuestion} />
+          <RowContainer currentVersion={this.props.currentVersion}
+                        categories={this.props.game[this.props.currentVersion].categories}
+                        openQuestion={this.openQuestion} />
         </table>
         }
         { showQuestion && <Question question={this.state.showQuestion} closeQuestion={this.closeQuestion} />}
@@ -73,7 +120,6 @@ class App extends Component {
 }
 
 const mapStateToProps = (state) => {
-  console.log(state.appReducer.game);
   return {
     game: state.appReducer.game,
     players: state.appReducer.players,
@@ -82,5 +128,5 @@ const mapStateToProps = (state) => {
   };
 }
 
-export default connect(mapStateToProps, { updateScore })(App);
+export default connect(mapStateToProps, { updateScore, setCurrentVersion })(App);
 

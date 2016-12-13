@@ -13,8 +13,7 @@ class Row extends Component {
     let cells = [];
     for (let i = 0; i < 5; i++) {
       let category = this.props.categories[i][0].category;
-      console.log(category)
-      let isAnswered = Object.keys(this.props.categories[i]).find(q => {return this.props.categories[i][q].value === this.props.value }).isAnswered;
+      let isAnswered = this.props.categories[i].find(q => {return q.value === this.props.value }).isAnswered;
       cells.push(
         <QuestionCell key={i}
                       value={this.props.value}

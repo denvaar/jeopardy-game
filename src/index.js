@@ -7,6 +7,7 @@ import { Router, Route, hashHistory } from 'react-router';
 
 import reducers from './reducers/reducers';
 import App from './components/App';
+import FinalJeopardy from './components/FinalJeopardy';
 import Setup from './components/Setup';
 import Edit from './components/Edit';
 import '../styles/styles.css';
@@ -22,6 +23,7 @@ ReactDOM.render(
     <Router history={hashHistory}>
       <Route path="/" component={Setup} />
       <Route path="/play" component={App} />
+      <Route path="/play/finalJeopardy" component={FinalJeopardy} />
       <Route path="/edit" component={Edit} />
     </Router>
   </Provider>,

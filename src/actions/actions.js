@@ -3,10 +3,20 @@ export const ADD_PLAYER = "ADD_PLAYER";
 export const UPDATE_SCORE = "UPDATE_SCORE";
 export const UPDATE_LAST_CORRECT_PLAYER = "UPDATE_LAST_CORRECT_PLAYER";
 export const UPDATE_QUESTION = "UPDATE_QUESTION";
+export const SET_CURRENT_VERSION = "SET_CURRENT_VERSION";
 
 
-export const saveGame = () => {
+export const setCurrentVersion = (version) => {
+  return dispatch => {
+    return dispatch(_setCurrentVersion(version));
+  }
+}
 
+const _setCurrentVersion = (version) => {
+  return {
+    type: SET_CURRENT_VERSION,
+    version: version
+  };
 }
 
 export const loadGameData = (data) => {

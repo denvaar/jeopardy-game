@@ -5,6 +5,7 @@ import {
   UPDATE_SCORE,
   UPDATE_LAST_CORRECT_PLAYER,
   UPDATE_QUESTION,
+  SET_CURRENT_VERSION,
 } from '../actions/actions';
 
 const INITIAL_STATE = {
@@ -30,6 +31,12 @@ const INITIAL_STATE = {
 
 const appReducer = (state = INITIAL_STATE, action) => {
   switch (action.type) {
+    case SET_CURRENT_VERSION:
+      console.log('^^^',action.version)
+      return {
+        ...state,
+        currentVersion: action.version
+      };
     case UPDATE_QUESTION:
       const questionIndex = state.game[state.currentVersion].categories[action.categoryIndex].findIndex(question => {
         return question.question === action.question.question;
