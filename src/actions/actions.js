@@ -4,7 +4,22 @@ export const UPDATE_SCORE = "UPDATE_SCORE";
 export const UPDATE_LAST_CORRECT_PLAYER = "UPDATE_LAST_CORRECT_PLAYER";
 export const UPDATE_QUESTION = "UPDATE_QUESTION";
 export const SET_CURRENT_VERSION = "SET_CURRENT_VERSION";
+export const SET_WAGER = "SET_WAGER";
 
+
+export const setPlayerWager = (wager, player) => {
+  return dispatch => {
+    return dispatch(_setPlayerWager(wager, player));
+  }
+}
+
+const _setPlayerWager = (wager, player) => {
+  return {
+    type: SET_WAGER,
+    player: player,
+    wager: wager
+  };
+}
 
 export const setCurrentVersion = (version) => {
   return dispatch => {

@@ -6,6 +6,7 @@ import {
   UPDATE_LAST_CORRECT_PLAYER,
   UPDATE_QUESTION,
   SET_CURRENT_VERSION,
+  SET_WAGER
 } from '../actions/actions';
 
 const INITIAL_STATE = {
@@ -31,8 +32,23 @@ const INITIAL_STATE = {
 
 const appReducer = (state = INITIAL_STATE, action) => {
   switch (action.type) {
+    case SET_WAGER:
+      let i = Object.keys(state.players).find(p => {return state.players[p].name === action.player});
+      console.log(state.players, i)
+      let player = {
+        ...state.players[i],
+        wager: action.wager
+      };
+      console.log(player)
+      return {
+        ...state,
+        players: [
+          ...state.players.slice(0, i),
+          player,
+          ...state.players.slice(i + 1)
+        ]
+      };
     case SET_CURRENT_VERSION:
-      console.log('^^^',action.version)
       return {
         ...state,
         currentVersion: action.version

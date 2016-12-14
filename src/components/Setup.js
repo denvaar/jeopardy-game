@@ -51,9 +51,9 @@ class Setup extends Component {
 
   render() {
     return (
-      <div className="setup-screen">
+      <div className="game-container">
         {!this.state.creatingGame &&
-          <div>
+          <div className="setup-screen">
             <h1>JEOPARDY!</h1>
             <Players />
             <div className="menu">

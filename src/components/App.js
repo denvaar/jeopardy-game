@@ -34,7 +34,7 @@ class App extends Component {
         });
       }
       
-      if (done) {
+      if (true) {
         let dict = ({
           jeopardy: 0,
           //doubleJeopardy: 1,
@@ -43,10 +43,10 @@ class App extends Component {
         let nextVersion = dict[this.props.currentVersion] + 1 
         this.props.setCurrentVersion(Object.keys(dict)[nextVersion]);
         hashHistory.push("/play/finalJeopardy");
-      }
-      
-      if (data.value >= 0) {
-        this.setState({showQuestion: false});
+      } else { 
+        if (data.value >= 0) {
+          this.setState({showQuestion: false});
+        }
       }
     });
   
@@ -64,33 +64,6 @@ class App extends Component {
  
   }
 
-  /*
-  closeQuestion() {
-    // check the board if it's done.
-    console.log('here')
-    let done = true;
-    for (let i = 0; i < 5; i++) {
-      this.props.game[this.props.currentVersion].categories[i].forEach(obj => {
-        if (!obj.isAnswered) {
-          done = false;
-        }
-      });
-    }
-    
-    //if (done) {
-      let nextVersion = ({
-        jeopardy: 0,
-        doubleJeopardy: 1,
-        finalJeopardy: 2
-      })[this.props.currentVersion] + 1;
-      console.log(Object.keys(nextVersion)[nextVersion]);
-      this.props.setCurrentVersion(Object.keys(nextVersion)[nextVersion]);
-
-    //}
-
-    this.setState({showQuestion: false });
-  }
-  */
 
   render() {
     if (this.props.currentVersion === "finalJeopardy") return <div></div>;
