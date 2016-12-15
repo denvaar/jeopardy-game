@@ -23,10 +23,23 @@
   margin: -8px;
 }
 
+h1 {
+  font-size: 24vw;
+}
 .setup-screen h1 {
   margin-top: 5px;
   margin-bottom: 0;
-  font-size: 6em;
+  font-size: 24vw;
+}
+
+
+.file-info {
+  font-family: monospace;
+  font-size: 15px;
+  position: absolute;
+  bottom: 79px;
+  margin: 0 auto;
+  width: 100%;
 }
 
 .setup-screen h2 {
@@ -124,8 +137,10 @@ button {
 button:hover { background: #f1ba69; }
 
 .disabled-button, .disabled-button:hover {
-  background: #757575;
+  background: #0d6bb6;
+  color: #004e8c;
   cursor: default;
+  pointer-events: none;
 }
 
 input[type="text"], textarea {

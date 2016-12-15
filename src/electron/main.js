@@ -23,6 +23,10 @@ app.on('ready', function() {
     app.exit(0);
   });
 
+  mainWindow.on('did-navigate-in-page', function(event) {
+    event.preventDefault(); // prevent ability to refresh page
+  });
+
   var adminWindow = new BrowserWindow({
     x: 0,
     y: 0,
@@ -80,8 +84,10 @@ app.on('ready', function() {
 
 ipc.on('open-file-dialog', function(event, arg) {
   var path = dialog.showOpenDialog(mainWindow, { properties: ["openFile"]});
-  var data = readFile(path[0]);
-  event.sender.send('open-file-reply', data);
+  if (path) {
+    var data = readFile(path[0]);
+    event.sender.send('open-file-reply', {name: path[0], fileContents: data});
+  }
 });
 
 ipc.on('handle-answer', function(event, args) {

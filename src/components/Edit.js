@@ -60,11 +60,27 @@ class Edit extends Component {
     this.updateCategory = this.updateCategory.bind(this);
     this.handleTabSwitch = this.handleTabSwitch.bind(this);
     this.editQuestion = this.editQuestion.bind(this);
+    this.editExisting = this.editExisting.bind(this);
+  
+    ipcRenderer.on('open-file-reply', (event, data) => {
+      console.log(data.fileContents)
+      this.setState({
+        game: JSON.parse(data.fileContents)
+      }, () => { console.log(this.state) });
+    });
+  }
+
+  componentWillUnmount() {
+    ipcRenderer.removeAllListeners(['open-file-reply']);
   }
 
   handleSave() {
     console.log(JSON.stringify(this.state.game));
     ipcRenderer.send('save-file-dialog', {data: JSON.stringify(this.state.game)});
+  }
+
+  editExisting() {
+    ipcRenderer.send('open-file-dialog');
   }
 
   updateCategory(index, value) {
@@ -141,9 +157,10 @@ class Edit extends Component {
         });
         return (
           <div key={i} className="category-section">
-            <input defaultValue={categoryName ? categoryName.category : ""}
+            <input 
+                   value={categoryName && categoryName.category || ""}
                    placeholder="Category title"
-                   className={categoryName.category ? "" : "blink"}
+                   className={categoryName && categoryName.category ? "" : "blink"}
                    id={"categoryInput" + categoryId}
                    ref={"categoryInput" + categoryId}
                    type="text"
@@ -273,6 +290,7 @@ class Edit extends Component {
                 </span>
               </div>
               {categories}
+              <button  onClick={this.editExisting}>Edit Existing</button>
               <button className="start-button" onClick={this.handleSave}>Save...</button>
             </div>
       }
@@ -281,13 +299,8 @@ class Edit extends Component {
   }
 }
 
-const mapStateToProps = (state) => {
-  return {
-    
-  }
-}
 
-export default connect(mapStateToProps, { })(Edit);
+export default connect(null, { })(Edit);
 
 
 const Questions = ({ categoryIndex, questions, editQuestion }) => {

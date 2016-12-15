@@ -13,20 +13,30 @@ class Setup extends Component {
     super(props);
     this.state = {
       data: undefined,
+      gameName: undefined,
       creatingGame: false
     };
     this.onStartGame = this.onStartGame.bind(this); 
     this.createGame = this.createGame.bind(this);
+    this.loadFileListener = this.loadFileListener.bind(this);
+    
+    ipcRenderer.on('open-file-reply', this.loadFileListener);
 
-    ipcRenderer.on('open-file-reply', (event, fileContents) => {
-      if(fileContents){
-        this.setState({
-          data: JSON.parse(fileContents)
-        });
-      }
-    }); 
   }
-  
+
+  componentWillUnmount() {
+    ipcRenderer.removeAllListeners(['open-file-reply']);
+  }
+
+  loadFileListener(event, data) {
+    if(data.fileContents){
+      this.setState({
+        data: JSON.parse(data.fileContents),
+        gameName: data.name
+      });
+    }
+  }
+
   createGame() {
     this.setState({creatingGame: true });
     hashHistory.push("/edit");
@@ -56,10 +66,13 @@ class Setup extends Component {
           <div className="setup-screen">
             <h1>JEOPARDY!</h1>
             <Players />
+            <br/>
+            <div className="file-info">Game file: {this.state.gameName || "--"}</div>
             <div className="menu">
               <button onClick={this.onLoadGame}>Load Game</button>
               <button onClick={this.createGame}>Create/Edit Game</button>
-              <button className={this.state.data ? "start-button": "disabled-button"} onClick={this.onStartGame}>Play!</button>
+              <button className={this.state.data && this.props.players.length > 1 ? "start-button": "disabled-button"}
+                      onClick={this.onStartGame}>Play!</button>
             </div>
           </div>
         }
