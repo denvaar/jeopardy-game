@@ -27,6 +27,9 @@ class Edit extends Component {
             ],
             4: [
               {value: 200}, {value: 400}, {value: 600}, {value: 800}, {value: 1000}
+            ],
+            5: [
+              {value: 200}, {value: 400}, {value: 600}, {value: 800}, {value: 1000}
             ]
           }
         },
@@ -46,6 +49,9 @@ class Edit extends Component {
             ],
             4: [
               {value: 400}, {value: 800}, {value: 1200}, {value: 1600}, {value: 2000}
+            ],
+            5: [
+              {value: 400}, {value: 800}, {value: 1200}, {value: 1600}, {value: 2000}
             ]
           }
         },
@@ -63,10 +69,31 @@ class Edit extends Component {
     this.editExisting = this.editExisting.bind(this);
   
     ipcRenderer.on('open-file-reply', (event, data) => {
-      console.log(data.fileContents)
-      this.setState({
-        game: JSON.parse(data.fileContents)
-      }, () => { console.log(this.state) });
+      try {
+        let gameData = JSON.parse(data.fileContents);
+        let jeopardy = {...this.state.game.jeopardy.categories, ...gameData.jeopardy.categories};
+        let doubleJeopardy = {...this.state.game.doubleJeopardy.categories, ...gameData.doubleJeopardy.categories};
+        let finalJeopardy = { ...this.state.game.finalJeopardy, ...gameData.finalJeopardy };
+        this.setState({
+          game: {
+            jeopardy: {
+              categories: {
+                ...jeopardy
+              }
+            },
+            doubleJeopardy: {
+              categories: {
+                ...doubleJeopardy
+              }
+            },
+            finalJeopardy: {
+              ...finalJeopardy
+            }
+          }
+        });
+      } catch(e) {
+        alert("Could not load game. Invalid or corrupt game file.");
+      }
     });
   }
 
@@ -106,7 +133,7 @@ class Edit extends Component {
 
   handleTabSwitch(tab) {
     if (tab != "finalJeopardy" && this.state.currentTab != "finalJeopardy") {
-      for (let i = 0; i < 5; i++) {
+      for (let i = 0; i < 6; i++) {
         let category = this.state.game[tab].categories[i][0].category;
         if (category) {
           this.refs["categoryInput" + i].value = category;

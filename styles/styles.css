@@ -1,10 +1,10 @@
 @font-face { 
   font-family: Gyparody Regular;
-  src: url('Gyparody.ttf');
+  src: url('./Gyparody.ttf');
 } 
 @font-face { 
   font-family: Korinna Bold;
-  src: url('Korinna Bold.ttf');
+  src: url('./Korinna Bold.ttf');
 } 
 
 
@@ -335,7 +335,6 @@ input[type="text"], textarea {
 
 .edit-screen .category-section {
   text-align: center;
-  padding: 10px;
 }
 
 .tab-container {

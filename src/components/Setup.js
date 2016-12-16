@@ -30,10 +30,14 @@ class Setup extends Component {
 
   loadFileListener(event, data) {
     if(data.fileContents){
-      this.setState({
-        data: JSON.parse(data.fileContents),
-        gameName: data.name
-      });
+      try {
+        this.setState({
+          data: JSON.parse(data.fileContents),
+          gameName: data.name
+        });
+      } catch(e) {
+        alert("Could not load game file. " + e);
+      }
     }
   }
 

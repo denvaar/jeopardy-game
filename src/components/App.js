@@ -26,7 +26,7 @@ class App extends Component {
       ipcRenderer.send("update-scoreboard", this.props.players);
     
       let done = true;
-      for (let i = 0; i < 5; i++) {
+      for (let i = 0; i < 6; i++) {
         this.props.game[this.props.currentVersion].categories[i].forEach(obj => {
           if (!obj.isAnswered) {
             done = false;

@@ -8,10 +8,19 @@ module.exports = {
     filename: 'bundle.js',
     publicPath: 'http://localhost:3000/',
     path: './'
+    //publicPath: '../built/',
+    //path: './built/'
   },  
   resolve: {
     extensions: ['', '.js', '.jsx']
   },
+  plugins: [
+    /*new webpack.DefinePlugin({
+      "process.env": { 
+         NODE_ENV: JSON.stringify("production") 
+       }
+    })*/
+  ],
   module: {
     loaders: [
       {   
@@ -20,13 +29,17 @@ module.exports = {
         loaders: ['babel-loader'] 
       },  
       {
-        test: /\.(png|jpg|gif|ttf|eot|svg|woff(2)?)(\?[a-z0-9]+)?$/,
+        test: /\.(png|jpg|gif|eot|svg|woff(2)?)(\?[a-z0-9]+)?$/,
         exclude: /node_modules/,
         loader: 'file-loader'
       },
       {   
         test: /\.css$/,
         loader: 'style-loader!css-loader' 
+      },
+      {
+        test: /\.ttf$/,
+        loader: "url-loader?limit=10000&mimetype=application/octet-stream"
       },
       {
         test: /\.json$/,

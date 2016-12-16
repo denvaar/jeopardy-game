@@ -11,7 +11,7 @@ class Row extends Component {
 
   render() {
     let cells = [];
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < 6; i++) {
       let category = this.props.categories[i][0].category;
       let isAnswered = this.props.categories[i].find(q => {return q.value === this.props.value }).isAnswered;
       cells.push(

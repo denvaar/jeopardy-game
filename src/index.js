@@ -18,6 +18,7 @@ const createStoreWithMiddleware = compose(
   window.devToolsExtension ? window.devToolsExtension() : f => f
 )(createStore);
 
+
 ReactDOM.render(
   <Provider store={createStoreWithMiddleware(reducers)}>
     <Router history={hashHistory}>
