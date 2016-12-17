@@ -20,7 +20,7 @@
   text-align: center;
   font-size: 30px;
   height: 100%;
-  margin: -8px;
+  margin-top: -5px;
 }
 
 h1 {
@@ -155,7 +155,7 @@ input[type="text"], textarea {
 
 .question {
   font-family: 'Korinna Bold', sans-serif;
-  background: #0d6bb6;
+  background: #147bce;
   color: #fff;
   font-size: 35px;
   text-transform: uppercase;
@@ -268,6 +268,7 @@ input[type="text"], textarea {
   text-shadow: none;
   padding: 5px;
   width: 300px;
+  margin: 0 auto;
 }
 
 .wager-box button, .wager-box button:hover {
@@ -282,8 +283,6 @@ input[type="text"], textarea {
   text-transform: uppercase;
   text-shadow: 2px 2px 5px #000;
   height: 100%;
-  padding: 20px 50px 20px 50px;
-
 }
 
 .edit-screen {

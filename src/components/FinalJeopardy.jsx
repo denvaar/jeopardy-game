@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import {ipcRenderer} from  'electron';
 
 import { setPlayerWager } from '../actions/actions';
 
@@ -24,20 +25,27 @@ class FinalJeopardy extends Component {
     });
     return (
       <div className="game-container final-jeopardy" style={{textAlign: "center"}}>
-        {!this.state.showCategory &&
+        {!this.state.showCategory && !this.state.showQuestion &&
         <div className="setup-screen">
           <h1>Final Jeopardy</h1>
           <button onClick={() => {this.setState({showCategory: true})}}>Show Category</button>
         </div>
         }
-        {this.state.showCategory &&
+        {this.state.showCategory && !this.state.showQuestion &&
         <div>
           <p>{this.props.game.finalJeopardy.category}</p> 
           {players}
-          <button onClick={() => {this.setState({showQuestion: true})}}>Show Question</button>
+          <button onClick={() => {
+            this.setState({showQuestion: true});
+            ipcRenderer.send('show-final-jeopardy-question', {
+              question: this.props.game.finalJeopardy.question,
+              answer: this.props.game.finalJeopardy.answer,
+              wagers: this.props.players.map(player => {return {player: player.name, wager: player.wager}})
+            });
+          }}>Show Question</button>
         </div>
         }
-        {this.state.showQuestion && <div className="question">this.props.game.finalJeopardy.question</div>}
+        {this.state.showQuestion && <div className="question">{this.props.game.finalJeopardy.question}</div>}
       </div>
     );
   }

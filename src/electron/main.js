@@ -49,6 +49,14 @@ app.on('ready', function() {
     });
   });
   
+  ipc.on('show-final-jeopardy-question', function(event, args) {
+    adminWindow.send('show-final-jeopardy-question', {
+      question: args.question,
+      answer: args.answer,
+      wagers: args.wagers
+    });
+  });
+  
   ipc.on('launch-admin-pannel', function(event, args) {
     adminWindow.send('launch-admin-pannel', {
       players: args.players

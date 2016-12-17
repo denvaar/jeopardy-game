@@ -35,10 +35,69 @@
         playersLeft = totalPlayers;
       });
       
+      ipcRenderer.on('show-final-jeopardy-question', function(event, data) {
+        document.getElementById('question').innerHTML = data.question;
+        document.getElementById('answer').innerHTML = data.answer;
+        document.querySelector(".players").classList.remove("players-disabled");
+        console.log(data.wagers);
+        document.querySelectorAll(".correct-button").forEach(function(node) {
+          node.removeEventListener("click", clickCorrectButton);
+          node.addEventListener("click", function() {
+            var player = data.wagers.find(obj => obj.player === node.dataset.player);
+            console.log("+", player.wager);
+          });
+        });
+
+        document.querySelectorAll(".incorrect-button").forEach(function(node) {
+          node.removeEventListener("click", clickIncorrectButton);
+          node.addEventListener("click", function() {
+            var player = data.wagers.find(obj => obj.player === node.dataset.player);
+            console.log("-", player.wager);
+          });
+        });
+      });
+      
       ipcRenderer.on('launch-admin-pannel', function(event, data) {
         document.getElementById("message").innerHTML = data.players[0] + " has control of the board";
         setupPlayers(data.players);
       });
+      
+      function clickCorrectButton() {
+        ipcRenderer.send("handle-answer", {
+          player: node.dataset.player,
+          value: value
+        });
+        document.getElementById("question").innerHTML = ""; 
+        document.getElementById("answer").innerHTML = ""; 
+        document.querySelectorAll(".player").forEach(function(playerDiv) {
+          playerDiv.classList.remove("players-disabled");
+        });
+        document.querySelector(".players").classList.add("players-disabled"); 
+        document.getElementById("message").innerHTML = node.dataset.player + " has control of the board";
+      }
+
+      function clickIncorrectButton() {
+        ipcRenderer.send("handle-answer", {
+          player: node.dataset.player,
+          value: value * -1,
+        });
+        node.parentNode.classList.add("players-disabled");
+        document.getElementById("message").innerHTML = "---";
+        playersLeft -= 1;
+        if (playersLeft === 0) {
+          ipcRenderer.send("handle-answer", {
+            player: node.dataset.player,
+            value: 0,
+          });
+          document.getElementById("question").innerHTML = ""; 
+          document.getElementById("answer").innerHTML = ""; 
+          document.querySelectorAll(".player").forEach(function(playerDiv) {
+            playerDiv.classList.remove("players-disabled");
+          });
+          document.querySelector(".players").classList.add("players-disabled"); 
+          document.getElementById("message").innerHTML = node.dataset.player + " has control of the board";
+        }
+      }
 
       function setupPlayers(players) {
         var targetDiv = document.querySelector(".players");
@@ -68,44 +127,11 @@
         });
         
         document.querySelectorAll(".correct-button").forEach(function(node) {
-          node.addEventListener("click", function() {
-            ipcRenderer.send("handle-answer", {
-              player: node.dataset.player,
-              value: value
-            });
-            document.getElementById("question").innerHTML = ""; 
-            document.getElementById("answer").innerHTML = ""; 
-            document.querySelectorAll(".player").forEach(function(playerDiv) {
-              playerDiv.classList.remove("players-disabled");
-            });
-            document.querySelector(".players").classList.add("players-disabled"); 
-            document.getElementById("message").innerHTML = node.dataset.player + " has control of the board";
-          });
+          node.addEventListener("click", clickCorrectButton);
         });
 
         document.querySelectorAll(".incorrect-button").forEach(function(node) {
-          node.addEventListener("click", function() {
-            ipcRenderer.send("handle-answer", {
-              player: node.dataset.player,
-              value: value * -1,
-            });
-            node.parentNode.classList.add("players-disabled");
-            document.getElementById("message").innerHTML = "---";
-            playersLeft -= 1;
-            if (playersLeft === 0) {
-              ipcRenderer.send("handle-answer", {
-                player: node.dataset.player,
-                value: 0,
-              });
-              document.getElementById("question").innerHTML = ""; 
-              document.getElementById("answer").innerHTML = ""; 
-              document.querySelectorAll(".player").forEach(function(playerDiv) {
-                playerDiv.classList.remove("players-disabled");
-              });
-              document.querySelector(".players").classList.add("players-disabled"); 
-              document.getElementById("message").innerHTML = node.dataset.player + " has control of the board";
-            }
-          });
+          node.addEventListener("click", clickIncorrectButton);
         });
       
       }
