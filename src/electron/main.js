@@ -101,6 +101,9 @@ ipc.on('open-file-dialog', function(event, arg) {
 ipc.on('handle-answer', function(event, args) {
   mainWindow.send('update-score', args);
 });
+ipc.on('handle-final-answer', function(event, args) {
+  mainWindow.send('update-final-score', args);
+});
 
 ipc.on('save-file-dialog', function(event, arg) {
   dialog.showSaveDialog(function(fileName) {

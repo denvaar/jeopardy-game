@@ -34,15 +34,17 @@ class App extends Component {
         });
       }
       
-      if (true) {
+      if (done) {
         let dict = ({
           jeopardy: 0,
-          //doubleJeopardy: 1,
-          finalJeopardy: 1
+          doubleJeopardy: 1,
+          finalJeopardy: 2
         });
         let nextVersion = dict[this.props.currentVersion] + 1 
         this.props.setCurrentVersion(Object.keys(dict)[nextVersion]);
-        hashHistory.push("/play/finalJeopardy");
+        if (Object.keys(dict)[nextVersion] === "finalJeopardy") {
+          hashHistory.push("/play/finalJeopardy");
+        }
       } else { 
         if (data.value >= 0) {
           this.setState({showQuestion: false});

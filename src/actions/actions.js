@@ -5,7 +5,21 @@ export const UPDATE_LAST_CORRECT_PLAYER = "UPDATE_LAST_CORRECT_PLAYER";
 export const UPDATE_QUESTION = "UPDATE_QUESTION";
 export const SET_CURRENT_VERSION = "SET_CURRENT_VERSION";
 export const SET_WAGER = "SET_WAGER";
+export const UPDATE_FINAL_SCORE = "UPDATE_FINAL_SCORE";
 
+export const updateFinalScore = (isCorrect, player) => {
+  return dispatch => {
+    dispatch(_updateFinalScore(isCorrect, player));
+  }
+}
+
+const _updateFinalScore = ({isCorrect, player}) => {
+  return {
+    type: UPDATE_FINAL_SCORE,
+    player: player,
+    isCorrect: isCorrect
+  };
+}
 
 export const setPlayerWager = (wager, player) => {
   return dispatch => {

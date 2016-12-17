@@ -6,23 +6,21 @@ import {
   UPDATE_LAST_CORRECT_PLAYER,
   UPDATE_QUESTION,
   SET_CURRENT_VERSION,
-  SET_WAGER
+  SET_WAGER,
+  UPDATE_FINAL_SCORE
 } from '../actions/actions';
 
 const INITIAL_STATE = {
   game: {
     jeopardy: {
       categories: {
-
       }
     },
     doubleJeopardy: {
       categories: {
-
       }
     },
     finalJeopardy: {
-      
     }
   },
   players: [],
@@ -32,19 +30,29 @@ const INITIAL_STATE = {
 
 const appReducer = (state = INITIAL_STATE, action) => {
   switch (action.type) {
-    case SET_WAGER:
-      let i = Object.keys(state.players).find(p => {return state.players[p].name === action.player});
-      console.log(state.players, i)
-      let player = {
-        ...state.players[i],
-        wager: action.wager
+    case UPDATE_FINAL_SCORE:
+      let playerIndex = state.players.findIndex(p => {return p.name === action.player});
+      return {
+        ...state,
+        players: [
+          ...state.players.slice(0, playerIndex),
+          {
+            ...state.players[playerIndex],
+            score: (action.isCorrect) ? state.players[playerIndex].score + state.players[playerIndex].wager : state.players[playerIndex].score - state.players[playerIndex].wager
+          },
+          ...state.players.slice(playerIndex + 1)
+        ]
       };
-      console.log(player)
+    case SET_WAGER:
+      let i = state.players.findIndex(p => {return p.name === action.player});
       return {
         ...state,
         players: [
           ...state.players.slice(0, i),
-          player,
+          {
+            ...state.players[i],
+            wager: action.wager
+          },
           ...state.players.slice(i + 1)
         ]
       };
