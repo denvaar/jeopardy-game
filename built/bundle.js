@@ -27587,17 +27587,23 @@
 	  var action = arguments[1];
 
 	  switch (action.type) {
-	    case _actions.SET_WAGER:
-	      var i = Object.keys(state.players).find(function (p) {
-	        return state.players[p].name === action.player;
+	    case _actions.UPDATE_FINAL_SCORE:
+	      var playerIndex = state.players.findIndex(function (p) {
+	        return p.name === action.player;
 	      });
-	      console.log(state.players, i);
-	      var player = _extends({}, state.players[i], {
-	        wager: action.wager
-	      });
-	      console.log(player);
 	      return _extends({}, state, {
-	        players: [].concat(_toConsumableArray(state.players.slice(0, i)), [player], _toConsumableArray(state.players.slice(i + 1)))
+	        players: [].concat(_toConsumableArray(state.players.slice(0, playerIndex)), [_extends({}, state.players[playerIndex], {
+	          score: action.isCorrect ? state.players[playerIndex].score + state.players[playerIndex].wager : state.players[playerIndex].score - state.players[playerIndex].wager
+	        })], _toConsumableArray(state.players.slice(playerIndex + 1)))
+	      });
+	    case _actions.SET_WAGER:
+	      var i = state.players.findIndex(function (p) {
+	        return p.name === action.player;
+	      });
+	      return _extends({}, state, {
+	        players: [].concat(_toConsumableArray(state.players.slice(0, i)), [_extends({}, state.players[i], {
+	          wager: action.wager
+	        })], _toConsumableArray(state.players.slice(i + 1)))
 	      });
 	    case _actions.SET_CURRENT_VERSION:
 	      return _extends({}, state, {
@@ -27668,6 +27674,24 @@
 	var UPDATE_QUESTION = exports.UPDATE_QUESTION = "UPDATE_QUESTION";
 	var SET_CURRENT_VERSION = exports.SET_CURRENT_VERSION = "SET_CURRENT_VERSION";
 	var SET_WAGER = exports.SET_WAGER = "SET_WAGER";
+	var UPDATE_FINAL_SCORE = exports.UPDATE_FINAL_SCORE = "UPDATE_FINAL_SCORE";
+
+	var updateFinalScore = exports.updateFinalScore = function updateFinalScore(isCorrect, player) {
+	  return function (dispatch) {
+	    dispatch(_updateFinalScore(isCorrect, player));
+	  };
+	};
+
+	var _updateFinalScore = function _updateFinalScore(_ref) {
+	  var isCorrect = _ref.isCorrect;
+	  var player = _ref.player;
+
+	  return {
+	    type: UPDATE_FINAL_SCORE,
+	    player: player,
+	    isCorrect: isCorrect
+	  };
+	};
 
 	var setPlayerWager = exports.setPlayerWager = function setPlayerWager(wager, player) {
 	  return function (dispatch) {
@@ -27829,7 +27853,7 @@
 	      _electron.ipcRenderer.send("update-scoreboard", _this.props.players);
 
 	      var done = true;
-	      for (var i = 0; i < 5; i++) {
+	      for (var i = 0; i < 6; i++) {
 	        _this.props.game[_this.props.currentVersion].categories[i].forEach(function (obj) {
 	          if (!obj.isAnswered) {
 	            done = false;
@@ -27837,15 +27861,17 @@
 	        });
 	      }
 
-	      if (true) {
+	      if (done && data.value >= 0) {
 	        var dict = {
 	          jeopardy: 0,
-	          //doubleJeopardy: 1,
-	          finalJeopardy: 1
+	          doubleJeopardy: 1,
+	          finalJeopardy: 2
 	        };
 	        var nextVersion = dict[_this.props.currentVersion] + 1;
 	        _this.props.setCurrentVersion(Object.keys(dict)[nextVersion]);
-	        _reactRouter.hashHistory.push("/play/finalJeopardy");
+	        if (Object.keys(dict)[nextVersion] === "finalJeopardy") {
+	          _reactRouter.hashHistory.push("/play/finalJeopardy");
+	        }
 	      } else {
 	        if (data.value >= 0) {
 	          _this.setState({ showQuestion: false });
@@ -27991,10 +28017,14 @@
 	    key: 'loadFileListener',
 	    value: function loadFileListener(event, data) {
 	      if (data.fileContents) {
-	        this.setState({
-	          data: JSON.parse(data.fileContents),
-	          gameName: data.name
-	        });
+	        try {
+	          this.setState({
+	            data: JSON.parse(data.fileContents),
+	            gameName: data.name
+	          });
+	        } catch (e) {
+	          alert("Could not load game file. " + e);
+	        }
 	      }
 	    }
 	  }, {
@@ -28268,7 +28298,7 @@
 	      var _this2 = this;
 
 	      var cells = [];
-	      for (var i = 0; i < 5; i++) {
+	      for (var i = 0; i < 6; i++) {
 	        var category = this.props.categories[i][0].category;
 	        var isAnswered = this.props.categories[i].find(function (q) {
 	          return q.value === _this2.props.value;
@@ -28476,6 +28506,8 @@
 	  value: true
 	});
 
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 	var _react = __webpack_require__(2);
@@ -28483,6 +28515,8 @@
 	var _react2 = _interopRequireDefault(_react);
 
 	var _reactRedux = __webpack_require__(172);
+
+	var _electron = __webpack_require__(272);
 
 	var _actions = __webpack_require__(270);
 
@@ -28503,12 +28537,28 @@
 	    var _this = _possibleConstructorReturn(this, (FinalJeopardy.__proto__ || Object.getPrototypeOf(FinalJeopardy)).call(this, props));
 
 	    _this.state = {
-	      showCategory: false
+	      showCategory: false,
+	      totalWagers: 0
 	    };
+
+	    _this.setFinalAnswer = _this.setFinalAnswer.bind(_this);
+
+	    _electron.ipcRenderer.on('update-final-score', _this.setFinalAnswer);
 	    return _this;
 	  }
 
 	  _createClass(FinalJeopardy, [{
+	    key: 'componentWillUnmount',
+	    value: function componentWillUnmount() {
+	      _electron.ipcRenderer.removeAllListeners(['update-final-score']);
+	    }
+	  }, {
+	    key: 'setFinalAnswer',
+	    value: function setFinalAnswer(event, args) {
+	      this.props.updateFinalScore(_extends({}, args));
+	      _electron.ipcRenderer.send("update-scoreboard", this.props.players);
+	    }
+	  }, {
 	    key: 'render',
 	    value: function render() {
 	      var _this2 = this;
@@ -28516,20 +28566,30 @@
 	      var players = this.props.players.map(function (player) {
 	        return _react2.default.createElement(
 	          'div',
-	          { key: player.name, className: 'wager-box' },
+	          { key: player.name, className: player.score > 0 ? "wager-box" : "wager-box players-disabled" },
 	          _react2.default.createElement(
 	            'div',
 	            null,
 	            player.name
 	          ),
-	          _react2.default.createElement('input', { type: 'text', ref: player.name + '_wager', placeholder: "Up to $" + player.score }),
+	          _react2.default.createElement('input', { type: 'text',
+	            ref: player.name + '_wager',
+	            placeholder: "Up to $" + player.score }),
 	          _react2.default.createElement(
 	            'div',
 	            null,
 	            _react2.default.createElement(
 	              'button',
 	              { onClick: function onClick(event) {
-	                  event.target.classList.add('disabled-button');_this2.props.setPlayerWager(_this2.refs[player.name + '_wager'].value, player.name);
+	                  var wager = parseInt(_this2.refs[player.name + '_wager'].value);
+	                  if (wager > player.score || wager === Number.NaN) {
+	                    alert(player.name + ' cannot wager more than ' + player.score + '.');
+	                  } else {
+	                    _this2.setState({ totalWagers: _this2.state.totalWagers + 1 });
+	                    event.target.classList.add('players-disabled');
+	                    _this2.refs[player.name + '_wager'].classList.add('players-disabled');
+	                    _this2.props.setPlayerWager(wager, player.name);
+	                  }
 	                } },
 	              'Wager'
 	            )
@@ -28539,7 +28599,7 @@
 	      return _react2.default.createElement(
 	        'div',
 	        { className: 'game-container final-jeopardy', style: { textAlign: "center" } },
-	        !this.state.showCategory && _react2.default.createElement(
+	        !this.state.showCategory && !this.state.showQuestion && _react2.default.createElement(
 	          'div',
 	          { className: 'setup-screen' },
 	          _react2.default.createElement(
@@ -28555,7 +28615,7 @@
 	            'Show Category'
 	          )
 	        ),
-	        this.state.showCategory && _react2.default.createElement(
+	        this.state.showCategory && !this.state.showQuestion && _react2.default.createElement(
 	          'div',
 	          null,
 	          _react2.default.createElement(
@@ -28566,8 +28626,18 @@
 	          players,
 	          _react2.default.createElement(
 	            'button',
-	            { onClick: function onClick() {
+	            { className: this.state.totalWagers == this.props.players.filter(function (p) {
+	                return p.score > 0;
+	              }).length ? "" : "players-disabled",
+	              onClick: function onClick() {
 	                _this2.setState({ showQuestion: true });
+	                _electron.ipcRenderer.send('show-final-jeopardy-question', {
+	                  question: _this2.props.game.finalJeopardy.question,
+	                  answer: _this2.props.game.finalJeopardy.answer,
+	                  wagers: _this2.props.players.map(function (player) {
+	                    return { player: player.name, wager: player.wager };
+	                  })
+	                });
 	              } },
 	            'Show Question'
 	          )
@@ -28575,7 +28645,7 @@
 	        this.state.showQuestion && _react2.default.createElement(
 	          'div',
 	          { className: 'question' },
-	          'this.props.game.finalJeopardy.question'
+	          this.props.game.finalJeopardy.question
 	        )
 	      );
 	    }
@@ -28591,7 +28661,7 @@
 	  };
 	};
 
-	exports.default = (0, _reactRedux.connect)(mapStateToProps, { setPlayerWager: _actions.setPlayerWager })(FinalJeopardy);
+	exports.default = (0, _reactRedux.connect)(mapStateToProps, { setPlayerWager: _actions.setPlayerWager, updateFinalScore: _actions.updateFinalScore })(FinalJeopardy);
 
 /***/ },
 /* 281 */
@@ -28645,7 +28715,8 @@
 	            1: [{ value: 200 }, { value: 400 }, { value: 600 }, { value: 800 }, { value: 1000 }],
 	            2: [{ value: 200 }, { value: 400 }, { value: 600 }, { value: 800 }, { value: 1000 }],
 	            3: [{ value: 200 }, { value: 400 }, { value: 600 }, { value: 800 }, { value: 1000 }],
-	            4: [{ value: 200 }, { value: 400 }, { value: 600 }, { value: 800 }, { value: 1000 }]
+	            4: [{ value: 200 }, { value: 400 }, { value: 600 }, { value: 800 }, { value: 1000 }],
+	            5: [{ value: 200 }, { value: 400 }, { value: 600 }, { value: 800 }, { value: 1000 }]
 	          }
 	        },
 	        doubleJeopardy: {
@@ -28654,7 +28725,8 @@
 	            1: [{ value: 400 }, { value: 800 }, { value: 1200 }, { value: 1600 }, { value: 2000 }],
 	            2: [{ value: 400 }, { value: 800 }, { value: 1200 }, { value: 1600 }, { value: 2000 }],
 	            3: [{ value: 400 }, { value: 800 }, { value: 1200 }, { value: 1600 }, { value: 2000 }],
-	            4: [{ value: 400 }, { value: 800 }, { value: 1200 }, { value: 1600 }, { value: 2000 }]
+	            4: [{ value: 400 }, { value: 800 }, { value: 1200 }, { value: 1600 }, { value: 2000 }],
+	            5: [{ value: 400 }, { value: 800 }, { value: 1200 }, { value: 1600 }, { value: 2000 }]
 	          }
 	        },
 	        finalJeopardy: {
@@ -28671,12 +28743,25 @@
 	    _this.editExisting = _this.editExisting.bind(_this);
 
 	    _electron.ipcRenderer.on('open-file-reply', function (event, data) {
-	      console.log(data.fileContents);
-	      _this.setState({
-	        game: JSON.parse(data.fileContents)
-	      }, function () {
-	        console.log(_this.state);
-	      });
+	      try {
+	        var gameData = JSON.parse(data.fileContents);
+	        var jeopardy = _extends({}, _this.state.game.jeopardy.categories, gameData.jeopardy.categories);
+	        var doubleJeopardy = _extends({}, _this.state.game.doubleJeopardy.categories, gameData.doubleJeopardy.categories);
+	        var finalJeopardy = _extends({}, _this.state.game.finalJeopardy, gameData.finalJeopardy);
+	        _this.setState({
+	          game: {
+	            jeopardy: {
+	              categories: _extends({}, jeopardy)
+	            },
+	            doubleJeopardy: {
+	              categories: _extends({}, doubleJeopardy)
+	            },
+	            finalJeopardy: _extends({}, finalJeopardy)
+	          }
+	        });
+	      } catch (e) {
+	        alert("Could not load game. Invalid or corrupt game file.");
+	      }
 	    });
 	    return _this;
 	  }
@@ -28716,7 +28801,7 @@
 	    key: 'handleTabSwitch',
 	    value: function handleTabSwitch(tab) {
 	      if (tab != "finalJeopardy" && this.state.currentTab != "finalJeopardy") {
-	        for (var i = 0; i < 5; i++) {
+	        for (var i = 0; i < 6; i++) {
 	          var category = this.state.game[tab].categories[i][0].category;
 	          if (category) {
 	            this.refs["categoryInput" + i].value = category;
@@ -29029,7 +29114,7 @@
 
 
 	// module
-	exports.push([module.id, "@font-face { \n  font-family: Gyparody Regular;\n  src: url(" + __webpack_require__(285) + ");\n} \n@font-face { \n  font-family: Korinna Bold;\n  src: url(" + __webpack_require__(286) + ");\n} \n\n\n.title-img {\n  width: 100%;\n}\n\n.setup-screen {\n  background: #147bce;\n  color: #a6d7ff;\n  text-shadow: 2px 2px #004e8c;\n  font-family: 'Gyparody Regular', sans-serif;\n  text-align: center;\n  font-size: 30px;\n  height: 100%;\n  margin: -8px;\n}\n\nh1 {\n  font-size: 24vw;\n}\n.setup-screen h1 {\n  margin-top: 5px;\n  margin-bottom: 0;\n  font-size: 24vw;\n}\n\n\n.file-info {\n  font-family: monospace;\n  font-size: 15px;\n  position: absolute;\n  bottom: 79px;\n  margin: 0 auto;\n  width: 100%;\n}\n\n.setup-screen h2 {\n  margin-top: 5px;\n}\n\n.setup-screen .menu {\n  position: absolute;\n  bottom: 0;\n  width: 100%;\n  height: 75px;\n}\n\n.menu button {\n  margin-left: 10px;\n}\n\n.start-button, .start-button:hover {\n  background: #6bbb6b;\n}\n\n.game-container { \n  position: absolute;\n  width: 100%;\n  text-align: center;\n  height: 100%;\n  background: #000;\n  margin: -8px;\n}\n\n.category {\n  border: 1px solid #fff;\n  width: 15%;\n  margin: 5px;\n  height: 100%;\n  display: inline-block;\n}\n.title {\n  background: #004e8c;\n  width: 100%;\n  height: 100px; \n}\n\ntable {\n  font-family: 'Archivo Black', sans-serif;\n  color: #fff;\n  width: 100%;\n  height: 100%;\n  table-layout: fixed;\nborder-collapse: separate;\n           border-spacing: 5px;\n}\n\n\nth, td {\n  box-shadow: 0 0 5px #000000 inset;\n  text-shadow: 2px 2px #000;\n  text-transform: uppercase;\n  font-size: 20px;\n  text-align: center;\n  vertical-align: middle;\n  background: #0d6bb6;\n}\n\nth {\n  padding: 20px 0 20px 0;\n}\n\ntd {\n  cursor: default;\n  color: #c68b33;\n  text-shadow: darkgoldenrod;\n  font-size: 35px;\n  text-shadow: 2px 2px 5px #000;\n}\n\ntd:hover {\n  background: #147bce;\n  color: #e7a646;\n}\n\nbutton {\n  cursor: pointer;\n  margin-top: 10px;\n  margin-right: 5px;\n  height: 35px;\n  min-width: 100px;\n  background: #e7a646;\n  color: #383838;\n  border: none;\n  font-size: 14px;\n  border-radius: 3px;\n  -webkit-appearance: none;\n}\nbutton:hover { background: #f1ba69; }\n\n.disabled-button, .disabled-button:hover {\n  background: #0d6bb6;\n  color: #004e8c;\n  cursor: default;\n  pointer-events: none;\n}\n\ninput[type=\"text\"], textarea {\n  padding-left: 7px;\n  height: 25px;\n  border-radius: 4px;\n  border: 1px solid #ddd;\n  font-size: 14px;\n  color: #545454;\n  margin-top: 10px;\n}\n\n.question {\n  font-family: 'Korinna Bold', sans-serif;\n  background: #0d6bb6;\n  color: #fff;\n  font-size: 35px;\n  text-transform: uppercase;\n  text-shadow: 2px 2px 5px #000;\n  height: 100%;\n  padding: 20px 50px 20px 50px;\n}\n\n.admin-pannel {\n  background: #fff;\n  padding: 10px;\n  font-family: Helvetica Neue, sans-serif;\n}\n\n.admin-pannel .players {\n  text-align: center;\n  border: 1px solid #545454;\n  border-radius: 2px;\n  bottom: 10px;\n  width: 97%;\n  position: absolute; \n}\n\n.players-disabled {\n  pointer-events: none;\n  opacity: 0.2;\n}\n\n\n.player-text {\n  font-family: 'Permanent Marker', cursive;\n  margin: 0;\n  color: #fff;\n}\n\n.scoreboard .player-text {\n  border-bottom: 2px solid #f1ba69;\n  font-size: 20px;\n}\n\n.scoreboard .score {\n  font-family: 'Archivo Black', sans-serif;\n  font-size: 20px;\n  color: #fff;\n}\n\n.scoreboard .player {\n  background: #0d6bb6;\n  width: 180px;\n  box-shadow: 0 0 5px #000000 inset;\n  padding: 5px;\n  text-align: center;\n  margin: 3px;\n}\n\n.admin-pannel .current-question p {\n  font-size: 25px;\n}\n\n.players span {\n  width: 100px;\n  display: inline-block;\n  text-align: center;\n}\n\n.players div {\n  height: 50px;\n  line-height: 50px;\n}\n.correct-button {\n  background: #58b158;\n}\n.correct-button:hover {\n  background: #67d067;\n}\n.incorrect-button {\n  background: #dc5050;\n}\n.incorrect-button:hover {\n  background: #f95a5a;\n}\n\n.disabled {\n  background: #757575;\n}\n.disabled button {\n  color: #757575;\n  background: #757575;\n  pointer-events: none;\n}\n\n.message {\n  text-align: center;\n  height: 50px;\n  color: #2d612d;\n  margin: -10px;\n  line-height: 50px;\n  background: #58b158;\n}\n\n.wager-box {\n  text-align: center;\n  background: #ffffff;\n  color: #000;\n  font-size: 14px;\n  font-family: sans-serif;\n  margin-top: 5px;\n  border: 4px solid #004e8c;\n  border-radius: 4px;\n  text-shadow: none;\n  padding: 5px;\n  width: 300px;\n}\n\n.wager-box button, .wager-box button:hover {\n  background:  #58b158;\n}\n\n.final-jeopardy {\n  font-family: 'Korinna Bold', sans-serif;\n  background: #147bce;\n  color: #fff;\n  font-size: 35px;\n  text-transform: uppercase;\n  text-shadow: 2px 2px 5px #000;\n  height: 100%;\n  padding: 20px 50px 20px 50px;\n\n}\n\n.edit-screen {\n  background: #fff;\n  font-family: 'Archivo Black', sans-serif;\n  text-align: center;\n  height: 100%;\n}\n\n.edit-screen input {\n  width: 300px;\n}\n\n.question-buttons {\n  padding: 10px 0 5px 0;\n}\n\n.edit-question {\n  border-radius: 2px;\n  margin: 5px;\n  cursor: pointer;\n  text-align: center;\n  padding: 5px;\n  background: #147bce;\n  color: #a6d7ff;\n  width: 85px;\n  display: inline-block;\n}\n\n@keyframes blink {\n    0% { box-shadow: 0 0 15px #a6d7ff; }\n    50% { box-shadow: none; }\n    100% { box-shadow: 0 0 15px #a6d7ff; }\n}\n\n@-webkit-keyframes blink {\n    0% { box-shadow: 0 0 15px #a6d7ff; }\n    50% { box-shadow: 0 0 0; }\n    100% { box-shadow: 0 0 15px #a6d7ff; }\n}\n\n.blink {\n    -webkit-animation: blink 1.0s linear infinite;\n    -moz-animation: blink 1.0s linear infinite;\n    -ms-animation: blink 1.0s linear infinite;\n    -o-animation: blink 1.0s linear infinite;\n    animation: blink 1.0s linear infinite;\n}\n\n.edit-screen .category-section {\n  text-align: center;\n  padding: 10px;\n}\n\n.tab-container {\n  border-bottom: 5px solid #ddd;\n}\n.tab {\n  margin-right: 10px;\n  text-transform: uppercase;\n  cursor: pointer;\n  padding: 3px 3px 0 3px;\n  color: #545454;\n}\n.tab:hover {\n  background: aliceblue;\n  color: #0d6bb6;\n}\n\n.cancel {\n  background: #ddd;\n}\n.cancel:hover {\n  background: #ddd !important;\n}\n\n.edit-screen h4 {\n  text-transform: uppercase;\n}\n\n.back-button {\n  position: fixed;\n  background: #a6d7ff;\n  top: 10px;\n  cursor: pointer;\n  left: 10px;\n  line-height: 90px;\n  text-align: center;\n  border-radius: 50%;\n  color: #fff;\n  height: 90px;\n  width: 90px;\n  box-shadow: 0 0 17px #757575;\n}\n.back-button:hover {\n  background: #8ec2ec;\n}\n", ""]);
+	exports.push([module.id, "@font-face { \n  font-family: Gyparody Regular;\n  src: url(" + __webpack_require__(285) + ");\n} \n@font-face { \n  font-family: Korinna Bold;\n  src: url(" + __webpack_require__(286) + ");\n} \n\n\n.title-img {\n  width: 100%;\n}\n\n.setup-screen {\n  background: #147bce;\n  color: #a6d7ff;\n  text-shadow: 2px 2px #004e8c;\n  font-family: 'Gyparody Regular', sans-serif;\n  text-align: center;\n  font-size: 30px;\n  height: 100%;\n  margin-top: -5px;\n}\n\nh1 {\n  font-size: 24vw;\n}\n.setup-screen h1 {\n  margin-top: 5px;\n  margin-bottom: 0;\n  font-size: 24vw;\n}\n\n\n.file-info {\n  font-family: monospace;\n  font-size: 15px;\n  position: absolute;\n  bottom: 79px;\n  margin: 0 auto;\n  width: 100%;\n}\n\n.setup-screen h2 {\n  margin-top: 5px;\n}\n\n.setup-screen .menu {\n  position: absolute;\n  bottom: 0;\n  width: 100%;\n  height: 75px;\n}\n\n.menu button {\n  margin-left: 10px;\n}\n\n.start-button, .start-button:hover {\n  background: #6bbb6b;\n}\n\n.game-container { \n  position: absolute;\n  width: 100%;\n  text-align: center;\n  height: 100%;\n  background: #000;\n  margin: -8px;\n}\n\n.category {\n  border: 1px solid #fff;\n  width: 15%;\n  margin: 5px;\n  height: 100%;\n  display: inline-block;\n}\n.title {\n  background: #004e8c;\n  width: 100%;\n  height: 100px; \n}\n\ntable {\n  font-family: 'Archivo Black', sans-serif;\n  color: #fff;\n  width: 100%;\n  height: 100%;\n  table-layout: fixed;\nborder-collapse: separate;\n           border-spacing: 5px;\n}\n\n\nth, td {\n  box-shadow: 0 0 5px #000000 inset;\n  text-shadow: 2px 2px #000;\n  text-transform: uppercase;\n  font-size: 20px;\n  text-align: center;\n  vertical-align: middle;\n  background: #0d6bb6;\n}\n\nth {\n  padding: 20px 0 20px 0;\n}\n\ntd {\n  cursor: default;\n  color: #c68b33;\n  text-shadow: darkgoldenrod;\n  font-size: 35px;\n  text-shadow: 2px 2px 5px #000;\n}\n\ntd:hover {\n  background: #147bce;\n  color: #e7a646;\n}\n\nbutton {\n  cursor: pointer;\n  margin-top: 10px;\n  margin-right: 5px;\n  height: 35px;\n  min-width: 100px;\n  background: #e7a646;\n  color: #383838;\n  border: none;\n  font-size: 14px;\n  border-radius: 3px;\n  -webkit-appearance: none;\n}\nbutton:hover { background: #f1ba69; }\n\n.disabled-button, .disabled-button:hover {\n  background: #0d6bb6;\n  color: #004e8c;\n  cursor: default;\n  pointer-events: none;\n}\n\ninput[type=\"text\"], textarea {\n  padding-left: 7px;\n  height: 25px;\n  border-radius: 4px;\n  border: 1px solid #ddd;\n  font-size: 14px;\n  color: #545454;\n  margin-top: 10px;\n}\n\n.question {\n  font-family: 'Korinna Bold', sans-serif;\n  background: #147bce;\n  color: #fff;\n  font-size: 35px;\n  text-transform: uppercase;\n  text-shadow: 2px 2px 5px #000;\n  height: 100%;\n  padding: 20px 50px 20px 50px;\n}\n\n.admin-pannel {\n  background: #fff;\n  padding: 10px;\n  font-family: Helvetica Neue, sans-serif;\n}\n\n.admin-pannel .players {\n  text-align: center;\n  border: 1px solid #545454;\n  border-radius: 2px;\n  bottom: 10px;\n  width: 97%;\n  position: absolute; \n}\n\n.players-disabled {\n  pointer-events: none;\n  opacity: 0.2;\n}\n\n\n.player-text {\n  font-family: 'Permanent Marker', cursive;\n  margin: 0;\n  color: #fff;\n}\n\n.scoreboard .player-text {\n  border-bottom: 2px solid #f1ba69;\n  font-size: 20px;\n}\n\n.scoreboard .score {\n  font-family: 'Archivo Black', sans-serif;\n  font-size: 20px;\n  color: #fff;\n}\n\n.scoreboard .player {\n  background: #0d6bb6;\n  width: 180px;\n  box-shadow: 0 0 5px #000000 inset;\n  padding: 5px;\n  text-align: center;\n  margin: 3px;\n}\n\n.admin-pannel .current-question p {\n  font-size: 25px;\n}\n\n.players span {\n  width: 100px;\n  display: inline-block;\n  text-align: center;\n}\n\n.players div {\n  height: 50px;\n  line-height: 50px;\n}\n.correct-button {\n  background: #58b158;\n}\n.correct-button:hover {\n  background: #67d067;\n}\n.incorrect-button {\n  background: #dc5050;\n}\n.incorrect-button:hover {\n  background: #f95a5a;\n}\n\n.disabled {\n  background: #757575;\n}\n.disabled button {\n  color: #757575;\n  background: #757575;\n  pointer-events: none;\n}\n\n.message {\n  text-align: center;\n  height: 50px;\n  color: #2d612d;\n  margin: -10px;\n  line-height: 50px;\n  background: #58b158;\n}\n\n.wager-box {\n  text-align: center;\n  background: #ffffff;\n  color: #000;\n  font-size: 14px;\n  font-family: sans-serif;\n  margin-top: 5px;\n  border: 4px solid #004e8c;\n  border-radius: 4px;\n  text-shadow: none;\n  padding: 5px;\n  width: 300px;\n  margin: 0 auto;\n}\n\n.wager-box button, .wager-box button:hover {\n  background:  #58b158;\n}\n\n.final-jeopardy {\n  font-family: 'Korinna Bold', sans-serif;\n  background: #147bce;\n  color: #fff;\n  font-size: 35px;\n  text-transform: uppercase;\n  text-shadow: 2px 2px 5px #000;\n  height: 100%;\n}\n\n.edit-screen {\n  background: #fff;\n  font-family: 'Archivo Black', sans-serif;\n  text-align: center;\n  height: 100%;\n}\n\n.edit-screen input {\n  width: 300px;\n}\n\n.question-buttons {\n  padding: 10px 0 5px 0;\n}\n\n.edit-question {\n  border-radius: 2px;\n  margin: 5px;\n  cursor: pointer;\n  text-align: center;\n  padding: 5px;\n  background: #147bce;\n  color: #a6d7ff;\n  width: 85px;\n  display: inline-block;\n}\n\n@keyframes blink {\n    0% { box-shadow: 0 0 15px #a6d7ff; }\n    50% { box-shadow: none; }\n    100% { box-shadow: 0 0 15px #a6d7ff; }\n}\n\n@-webkit-keyframes blink {\n    0% { box-shadow: 0 0 15px #a6d7ff; }\n    50% { box-shadow: 0 0 0; }\n    100% { box-shadow: 0 0 15px #a6d7ff; }\n}\n\n.blink {\n    -webkit-animation: blink 1.0s linear infinite;\n    -moz-animation: blink 1.0s linear infinite;\n    -ms-animation: blink 1.0s linear infinite;\n    -o-animation: blink 1.0s linear infinite;\n    animation: blink 1.0s linear infinite;\n}\n\n.edit-screen .category-section {\n  text-align: center;\n}\n\n.tab-container {\n  border-bottom: 5px solid #ddd;\n}\n.tab {\n  margin-right: 10px;\n  text-transform: uppercase;\n  cursor: pointer;\n  padding: 3px 3px 0 3px;\n  color: #545454;\n}\n.tab:hover {\n  background: aliceblue;\n  color: #0d6bb6;\n}\n\n.cancel {\n  background: #ddd;\n}\n.cancel:hover {\n  background: #ddd !important;\n}\n\n.edit-screen h4 {\n  text-transform: uppercase;\n}\n\n.back-button {\n  position: fixed;\n  background: #a6d7ff;\n  top: 10px;\n  cursor: pointer;\n  left: 10px;\n  line-height: 90px;\n  text-align: center;\n  border-radius: 50%;\n  color: #fff;\n  height: 90px;\n  width: 90px;\n  box-shadow: 0 0 17px #757575;\n}\n.back-button:hover {\n  background: #8ec2ec;\n}\n", ""]);
 
 	// exports
 

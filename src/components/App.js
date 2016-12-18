@@ -34,7 +34,7 @@ class App extends Component {
         });
       }
       
-      if (done) {
+      if (done && data.value >= 0) {
         let dict = ({
           jeopardy: 0,
           doubleJeopardy: 1,

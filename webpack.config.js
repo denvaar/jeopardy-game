@@ -6,20 +6,20 @@ module.exports = {
   },
   output: {
     filename: 'bundle.js',
-    publicPath: 'http://localhost:3000/',
-    path: './'
-    //publicPath: '../built/',
-    //path: './built/'
+    //publicPath: 'http://localhost:3000/',
+    //path: './'
+    publicPath: '../built/',
+    path: './built/'
   },  
   resolve: {
     extensions: ['', '.js', '.jsx']
   },
   plugins: [
-    /*new webpack.DefinePlugin({
+    new webpack.DefinePlugin({
       "process.env": { 
          NODE_ENV: JSON.stringify("production") 
        }
-    })*/
+    })
   ],
   module: {
     loaders: [
