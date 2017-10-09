@@ -27643,15 +27643,15 @@
 
 	var _Setup2 = _interopRequireDefault(_Setup);
 
-	var _Row = __webpack_require__(265);
+	var _Row = __webpack_require__(264);
 
 	var _Row2 = _interopRequireDefault(_Row);
 
-	var _Question = __webpack_require__(267);
+	var _Question = __webpack_require__(266);
 
 	var _Question2 = _interopRequireDefault(_Question);
 
-	var _Categories = __webpack_require__(263);
+	var _Categories = __webpack_require__(267);
 
 	var _Categories2 = _interopRequireDefault(_Categories);
 
@@ -27669,6 +27669,33 @@
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
+	// Helper Functions
+	var getAllQuestions = function getAllQuestions(categories) {
+	  var allQs = [];
+	  Object.keys(categories).forEach(function (category) {
+	    allQs = allQs.concat(categories[category]);
+	  });
+	  return allQs;
+	};
+
+	var isBoardComplete = function isBoardComplete(categories) {
+	  var allQs = getAllQuestions(categories);
+	  return !allQs.filter(function (question) {
+	    return !question.isAnswered;
+	  }).length;
+	};
+
+	var getCategories = function getCategories(categories) {
+	  var catObject = {};
+	  var allQs = getAllQuestions(categories);
+	  allQs.forEach(function (question) {
+	    catObject[question.category] = '';
+	  });
+	  return Object.keys(catObject);
+	};
+
+	// Component
+
 	var App = function (_Component) {
 	  _inherits(App, _Component);
 
@@ -27685,17 +27712,8 @@
 
 	    _electron.ipcRenderer.on('update-score', function (event, data) {
 	      _this.props.updateScore(data.value, data.player, _this.state.category, _this.state.showQuestion);
-	      _electron.ipcRenderer.send("update-scoreboard", _this.props.players);
-
-	      var done = true;
-	      var questions = [];
-	      for (var i = 0; i < 6; i++) {
-	        _this.props.game[_this.props.currentVersion].categories[i].forEach(function (obj) {
-	          if (!obj.isAnswered) {
-	            done = false;
-	          }
-	        });
-	      }
+	      _electron.ipcRenderer.send('update-scoreboard', _this.props.players);
+	      var done = isBoardComplete(_this.props.game[_this.props.currentVersion].categories);
 
 	      if (done && data.value >= 0) {
 	        var dict = {
@@ -27705,13 +27723,11 @@
 	        };
 	        var nextVersion = dict[_this.props.currentVersion] + 1;
 	        _this.props.setCurrentVersion(Object.keys(dict)[nextVersion]);
-	        if (Object.keys(dict)[nextVersion] === "finalJeopardy") {
-	          _reactRouter.hashHistory.push("/play/finalJeopardy");
+	        if (Object.keys(dict)[nextVersion] === 'finalJeopardy') {
+	          _reactRouter.hashHistory.push('/play/finalJeopardy');
 	        }
-	      } else {
-	        if (data.value >= 0) {
-	          _this.setState({ showQuestion: false });
-	        }
+	      } else if (data.value >= 0) {
+	        _this.setState({ showQuestion: false });
 	      }
 	    });
 
@@ -27726,16 +27742,13 @@
 	        return question.value === value;
 	      });
 	      this.setState({ showQuestion: question, category: category });
-
 	      /* send answer to admin pannel */
 	      _electron.ipcRenderer.send('send-answer-to-admin', _extends({}, question, { lastCorrectPlayer: this.props.lastCorrectPlayer }));
 	    }
 	  }, {
 	    key: 'render',
 	    value: function render() {
-	      var _this2 = this;
-
-	      if (this.props.currentVersion === "finalJeopardy") return _react2.default.createElement('div', null);
+	      if (this.props.currentVersion === 'finalJeopardy') return _react2.default.createElement('div', null);
 	      var showGame = Object.keys(this.props.game[this.props.currentVersion].categories).length > 0;
 	      var showQuestion = this.state.showQuestion;
 	      return _react2.default.createElement(
@@ -27747,15 +27760,15 @@
 	          _react2.default.createElement(
 	            'thead',
 	            null,
-	            _react2.default.createElement(_Categories2.default, { data: function () {
-	                return Object.keys(_this2.props.game[_this2.props.currentVersion].categories).map(function (catId) {
-	                  return _this2.props.game[_this2.props.currentVersion].categories[catId][0].category;
-	                });
-	              }() })
+	            _react2.default.createElement(_Categories2.default, {
+	              categories: getCategories(this.props.game[this.props.currentVersion].categories)
+	            })
 	          ),
-	          _react2.default.createElement(_RowContainer2.default, { currentVersion: this.props.currentVersion,
+	          _react2.default.createElement(_RowContainer2.default, {
+	            currentVersion: this.props.currentVersion,
 	            categories: this.props.game[this.props.currentVersion].categories,
-	            openQuestion: this.openQuestion })
+	            openQuestion: this.openQuestion
+	          })
 	        ),
 	        showQuestion && _react2.default.createElement(_Question2.default, { question: this.state.showQuestion, closeQuestion: this.closeQuestion })
 	      );
@@ -27804,13 +27817,9 @@
 
 	var _reactRouter = __webpack_require__(204);
 
-	var _Categories = __webpack_require__(263);
+	var _Players = __webpack_require__(263);
 
-	var _Categories2 = _interopRequireDefault(_Categories);
-
-	var _players = __webpack_require__(264);
-
-	var _players2 = _interopRequireDefault(_players);
+	var _Players2 = _interopRequireDefault(_Players);
 
 	var _actions = __webpack_require__(259);
 
@@ -27850,6 +27859,31 @@
 	      _electron.ipcRenderer.removeAllListeners(['open-file-reply']);
 	    }
 	  }, {
+	    key: 'onStartGame',
+	    value: function onStartGame() {
+	      _electron.ipcRenderer.send('launch-admin-pannel', {
+	        players: this.props.players.map(function (player) {
+	          return player.name;
+	        })
+	      });
+	      _electron.ipcRenderer.send('launch-scoreboard', {
+	        players: this.props.players
+	      });
+	      this.props.loadGameData(this.state.data);
+	      _reactRouter.hashHistory.push('/play');
+	    }
+	  }, {
+	    key: 'onLoadGame',
+	    value: function onLoadGame() {
+	      _electron.ipcRenderer.send('open-file-dialog');
+	    }
+	  }, {
+	    key: 'createGame',
+	    value: function createGame() {
+	      this.setState({ creatingGame: true });
+	      _reactRouter.hashHistory.push('/edit');
+	    }
+	  }, {
 	    key: 'loadFileListener',
 	    value: function loadFileListener(event, data) {
 	      if (data.fileContents) {
@@ -27859,36 +27893,9 @@
 	            gameName: data.name
 	          });
 	        } catch (e) {
-	          alert("Could not load game file. " + e);
+	          alert('Could not load game file. ' + e);
 	        }
 	      }
-	    }
-	  }, {
-	    key: 'createGame',
-	    value: function createGame() {
-	      this.setState({ creatingGame: true });
-	      _reactRouter.hashHistory.push("/edit");
-	    }
-	  }, {
-	    key: 'onLoadGame',
-	    value: function onLoadGame() {
-	      _electron.ipcRenderer.send('open-file-dialog');
-	    }
-	  }, {
-	    key: 'onStartGame',
-	    value: function onStartGame() {
-
-	      _electron.ipcRenderer.send('launch-admin-pannel', {
-	        players: this.props.players.map(function (player) {
-	          return player.name;
-	        })
-	      });
-	      _electron.ipcRenderer.send("launch-scoreboard", {
-	        players: this.props.players
-	      });
-
-	      this.props.loadGameData(this.state.data);
-	      _reactRouter.hashHistory.push("/play");
 	    }
 	  }, {
 	    key: 'render',
@@ -27904,13 +27911,13 @@
 	            null,
 	            'JEOPARDY!'
 	          ),
-	          _react2.default.createElement(_players2.default, null),
+	          _react2.default.createElement(_Players2.default, null),
 	          _react2.default.createElement('br', null),
 	          _react2.default.createElement(
 	            'div',
 	            { className: 'file-info' },
 	            'Game file: ',
-	            this.state.gameName || "--"
+	            this.state.gameName || '--'
 	          ),
 	          _react2.default.createElement(
 	            'div',
@@ -27927,7 +27934,7 @@
 	            ),
 	            _react2.default.createElement(
 	              'button',
-	              { className: this.state.data && this.props.players.length > 1 ? "start-button" : "disabled-button",
+	              { className: this.state.data && this.props.players.length > 1 ? 'start-button' : 'disabled-button',
 	                onClick: this.onStartGame },
 	              'Play!'
 	            )
@@ -27950,55 +27957,6 @@
 
 /***/ }),
 /* 263 */
-/***/ (function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var _react = __webpack_require__(2);
-
-	var _react2 = _interopRequireDefault(_react);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	exports.default = function (props) {
-	  return _react2.default.createElement(
-	    'tr',
-	    null,
-	    props.data.map(function (category, i) {
-	      return _react2.default.createElement(
-	        'th',
-	        { key: i },
-	        ' ',
-	        category,
-	        ' '
-	      );
-	    })
-	  );
-	};
-	// class Categories extends Component {
-	//   render() {
-	//     const categories = this.props.data.map((category, i) => {
-	//       return (
-	//         <th key={i}>{category}</th>
-	//       );
-	//     });
-
-	//     return (
-	//       <tr>
-	//         {categories}
-	//       </tr>
-	//     );
-	//   }
-	// }
-
-	// export default Categories;
-
-/***/ }),
-/* 264 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -28043,7 +28001,7 @@
 	      if (event.keyCode === 13) {
 	        /* enter key press */
 	        this.props.addPlayer(event.target.value);
-	        event.target.value = "";
+	        event.target.value = '';
 	      }
 	    }
 	  }, {
@@ -28082,7 +28040,7 @@
 	exports.default = (0, _reactRedux.connect)(mapStateToProps, { addPlayer: _actions.addPlayer })(Players);
 
 /***/ }),
-/* 265 */
+/* 264 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -28099,7 +28057,7 @@
 
 	var _reactRedux = __webpack_require__(171);
 
-	var _QuestionCell = __webpack_require__(266);
+	var _QuestionCell = __webpack_require__(265);
 
 	var _QuestionCell2 = _interopRequireDefault(_QuestionCell);
 
@@ -28161,6 +28119,52 @@
 	exports.default = (0, _reactRedux.connect)(mapStateToProps, {})(Row);
 
 /***/ }),
+/* 265 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _react = __webpack_require__(2);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	exports.default = function (props) {
+	  if (props.isAnswered) {
+	    return _react2.default.createElement('td', null);
+	  }
+	  return _react2.default.createElement(
+	    'td',
+	    { onClick: function onClick() {
+	        props.openQuestion(props.category, props.value);
+	      } },
+	    '$',
+	    props.value
+	  );
+	};
+
+	// class QuestionCell extends Component {
+	//   constructor(props) {
+	//     super(props);
+	//   }
+
+	//   render() {
+	//     let markup = <td onClick={() => {this.props.openQuestion(this.props.category, this.props.value);} }>${this.props.value}</td>;
+	//     if (this.props.isAnswered) {
+	//       markup = <td></td>;
+	//     }
+	//     return markup;
+	//   }
+	// }
+
+	// export default QuestionCell;
+
+/***/ }),
 /* 266 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -28170,65 +28174,29 @@
 	  value: true
 	});
 
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
 	var _react = __webpack_require__(2);
 
 	var _react2 = _interopRequireDefault(_react);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-	var QuestionCell = function (_Component) {
-	  _inherits(QuestionCell, _Component);
-
-	  function QuestionCell(props) {
-	    _classCallCheck(this, QuestionCell);
-
-	    return _possibleConstructorReturn(this, (QuestionCell.__proto__ || Object.getPrototypeOf(QuestionCell)).call(this, props));
-	  }
-
-	  _createClass(QuestionCell, [{
-	    key: 'render',
-	    value: function render() {
-	      var _this2 = this;
-
-	      var markup = _react2.default.createElement(
-	        'td',
-	        { onClick: function onClick() {
-	            _this2.props.openQuestion(_this2.props.category, _this2.props.value);
-	          } },
-	        '$',
-	        this.props.value
-	      );
-	      if (this.props.isAnswered) {
-	        markup = _react2.default.createElement('td', null);
-	      }
-	      return markup;
-	    }
-	  }]);
-
-	  return QuestionCell;
-	}(_react.Component);
-
-	exports.default = QuestionCell;
+	exports.default = function (props) {
+	  return _react2.default.createElement(
+	    'div',
+	    { className: 'question' },
+	    props.question.question
+	  );
+	};
 
 /***/ }),
 /* 267 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	"use strict";
+	'use strict';
 
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 	var _react = __webpack_require__(2);
 
@@ -28236,37 +28204,21 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-	var Question = function (_Component) {
-	  _inherits(Question, _Component);
-
-	  function Question(props) {
-	    _classCallCheck(this, Question);
-
-	    return _possibleConstructorReturn(this, (Question.__proto__ || Object.getPrototypeOf(Question)).call(this, props));
-	  }
-
-	  _createClass(Question, [{
-	    key: "render",
-	    value: function render() {
-	      // <div className="question" onClick={() => {this.props.closeQuestion()} }>{this.props.question.question}</div>
+	exports.default = function (props) {
+	  return _react2.default.createElement(
+	    'tr',
+	    null,
+	    props.categories.map(function (category, i) {
 	      return _react2.default.createElement(
-	        "div",
-	        { className: "question" },
-	        this.props.question.question
+	        'th',
+	        { key: i },
+	        ' ',
+	        category,
+	        ' '
 	      );
-	    }
-	  }]);
-
-	  return Question;
-	}(_react.Component);
-
-	exports.default = Question;
+	    })
+	  );
+	};
 
 /***/ }),
 /* 268 */
@@ -28278,52 +28230,28 @@
 	  value: true
 	});
 
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
 	var _react = __webpack_require__(2);
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _Row = __webpack_require__(265);
+	var _Row = __webpack_require__(264);
 
 	var _Row2 = _interopRequireDefault(_Row);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-	var RowContainer = function (_Component) {
-	  _inherits(RowContainer, _Component);
-
-	  function RowContainer(props) {
-	    _classCallCheck(this, RowContainer);
-
-	    return _possibleConstructorReturn(this, (RowContainer.__proto__ || Object.getPrototypeOf(RowContainer)).call(this, props));
-	  }
-
-	  _createClass(RowContainer, [{
-	    key: 'render',
-	    value: function render() {
-	      return _react2.default.createElement(
-	        'tbody',
-	        null,
-	        _react2.default.createElement(_Row2.default, { value: this.props.currentVersion === "jeopardy" ? 200 : 400, openQuestion: this.props.openQuestion, categories: this.props.categories }),
-	        _react2.default.createElement(_Row2.default, { value: this.props.currentVersion === "jeopardy" ? 400 : 800, openQuestion: this.props.openQuestion, categories: this.props.categories }),
-	        _react2.default.createElement(_Row2.default, { value: this.props.currentVersion === "jeopardy" ? 600 : 1200, openQuestion: this.props.openQuestion, categories: this.props.categories }),
-	        _react2.default.createElement(_Row2.default, { value: this.props.currentVersion === "jeopardy" ? 800 : 1600, openQuestion: this.props.openQuestion, categories: this.props.categories }),
-	        _react2.default.createElement(_Row2.default, { value: this.props.currentVersion === "jeopardy" ? 1000 : 2000, openQuestion: this.props.openQuestion, categories: this.props.categories })
-	      );
-	    }
-	  }]);
-
-	  return RowContainer;
-	}(_react.Component);
-
-	exports.default = RowContainer;
+	exports.default = function (props) {
+	  var multiplier = props.currentVersion === 'jeopardy' ? 1 : 2;
+	  return _react2.default.createElement(
+	    'tbody',
+	    null,
+	    _react2.default.createElement(_Row2.default, { value: 200 * multiplier, openQuestion: props.openQuestion, categories: props.categories }),
+	    _react2.default.createElement(_Row2.default, { value: 400 * multiplier, openQuestion: props.openQuestion, categories: props.categories }),
+	    _react2.default.createElement(_Row2.default, { value: 600 * multiplier, openQuestion: props.openQuestion, categories: props.categories }),
+	    _react2.default.createElement(_Row2.default, { value: 800 * multiplier, openQuestion: props.openQuestion, categories: props.categories }),
+	    _react2.default.createElement(_Row2.default, { value: 1000 * multiplier, openQuestion: props.openQuestion, categories: props.categories })
+	  );
+	};
 
 /***/ }),
 /* 269 */
@@ -28526,6 +28454,11 @@
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
+	var jeopardyValues = [{ value: 200 }, { value: 400 }, { value: 600 }, { value: 800 }, { value: 1000 }];
+	var doubleJeopardyValues = jeopardyValues.map(function (valObj) {
+	  return { value: valObj.value * 2 };
+	});
+
 	var Edit = function (_Component) {
 	  _inherits(Edit, _Component);
 
@@ -28536,32 +28469,32 @@
 
 	    _this.state = {
 	      editingQuestion: null,
-	      currentTab: "jeopardy",
+	      currentTab: 'jeopardy',
 	      game: {
 	        jeopardy: {
 	          categories: {
-	            0: [{ value: 200 }, { value: 400 }, { value: 600 }, { value: 800 }, { value: 1000 }],
-	            1: [{ value: 200 }, { value: 400 }, { value: 600 }, { value: 800 }, { value: 1000 }],
-	            2: [{ value: 200 }, { value: 400 }, { value: 600 }, { value: 800 }, { value: 1000 }],
-	            3: [{ value: 200 }, { value: 400 }, { value: 600 }, { value: 800 }, { value: 1000 }],
-	            4: [{ value: 200 }, { value: 400 }, { value: 600 }, { value: 800 }, { value: 1000 }],
-	            5: [{ value: 200 }, { value: 400 }, { value: 600 }, { value: 800 }, { value: 1000 }]
+	            0: jeopardyValues,
+	            1: jeopardyValues,
+	            2: jeopardyValues,
+	            3: jeopardyValues,
+	            4: jeopardyValues,
+	            5: jeopardyValues
 	          }
 	        },
 	        doubleJeopardy: {
 	          categories: {
-	            0: [{ value: 400 }, { value: 800 }, { value: 1200 }, { value: 1600 }, { value: 2000 }],
-	            1: [{ value: 400 }, { value: 800 }, { value: 1200 }, { value: 1600 }, { value: 2000 }],
-	            2: [{ value: 400 }, { value: 800 }, { value: 1200 }, { value: 1600 }, { value: 2000 }],
-	            3: [{ value: 400 }, { value: 800 }, { value: 1200 }, { value: 1600 }, { value: 2000 }],
-	            4: [{ value: 400 }, { value: 800 }, { value: 1200 }, { value: 1600 }, { value: 2000 }],
-	            5: [{ value: 400 }, { value: 800 }, { value: 1200 }, { value: 1600 }, { value: 2000 }]
+	            0: doubleJeopardyValues,
+	            1: doubleJeopardyValues,
+	            2: doubleJeopardyValues,
+	            3: doubleJeopardyValues,
+	            4: doubleJeopardyValues,
+	            5: doubleJeopardyValues
 	          }
 	        },
 	        finalJeopardy: {
-	          category: "",
-	          question: "",
-	          answer: ""
+	          category: '',
+	          question: '',
+	          answer: ''
 	        }
 	      }
 	    };
@@ -28589,7 +28522,7 @@
 	          }
 	        });
 	      } catch (e) {
-	        alert("Could not load game. Invalid or corrupt game file.");
+	        alert('Could not load game. Invalid or corrupt game file.');
 	      }
 	    });
 	    return _this;
@@ -28629,13 +28562,13 @@
 	  }, {
 	    key: 'handleTabSwitch',
 	    value: function handleTabSwitch(tab) {
-	      if (tab != "finalJeopardy" && this.state.currentTab != "finalJeopardy") {
+	      if (tab != 'finalJeopardy' && this.state.currentTab != 'finalJeopardy') {
 	        for (var i = 0; i < 6; i++) {
 	          var category = this.state.game[tab].categories[i][0].category;
 	          if (category) {
-	            this.refs["categoryInput" + i].value = category;
+	            this.refs['categoryInput' + i].value = category;
 	          } else {
-	            this.refs["categoryInput" + i].value = "";
+	            this.refs['categoryInput' + i].value = '';
 	          }
 	        }
 	      }
@@ -28669,24 +28602,24 @@
 	    value: function render() {
 	      var _this3 = this;
 
-	      if (this.state.editingQuestion && this.state.currentTab != "finalJeopardy") {
+	      if (this.state.editingQuestion && this.state.currentTab != 'finalJeopardy') {
 	        var questionObj = this.state.game[this.state.currentTab].categories[this.state.editingQuestion.categoryId][this.state.editingQuestion.questionId];
 	      }
 
-	      if (this.state.currentTab != "finalJeopardy") {
+	      if (this.state.currentTab != 'finalJeopardy') {
 	        var categories = Object.keys(this.state.game[this.state.currentTab].categories).map(function (categoryId, i) {
 	          var categoryName = _this3.state.game[_this3.state.currentTab].categories[categoryId].find(function (cat) {
-	            return cat.category != "";
+	            return cat.category != '';
 	          });
 	          return _react2.default.createElement(
 	            'div',
 	            { key: i, className: 'category-section' },
 	            _react2.default.createElement('input', {
-	              value: categoryName && categoryName.category || "",
+	              value: categoryName && categoryName.category || '',
 	              placeholder: 'Category title',
-	              className: categoryName && categoryName.category ? "" : "blink",
-	              id: "categoryInput" + categoryId,
-	              ref: "categoryInput" + categoryId,
+	              className: categoryName && categoryName.category ? '' : 'blink',
+	              id: 'categoryInput' + categoryId,
+	              ref: 'categoryInput' + categoryId,
 	              type: 'text',
 	              onChange: function onChange(event) {
 	                _this3.updateCategory(categoryId, event.target.value);
@@ -28705,7 +28638,7 @@
 	            null,
 	            _react2.default.createElement('input', { defaultValue: this.state.game.finalJeopardy.category,
 	              placeholder: 'Final Jeopardy category',
-	              className: this.state.game.finalJeopardy.category ? this.state.game.finalJeopardy.category : "blink",
+	              className: this.state.game.finalJeopardy.category ? this.state.game.finalJeopardy.category : 'blink',
 	              type: 'text',
 	              onChange: function onChange(event) {
 	                _this3.setState({
@@ -28722,8 +28655,8 @@
 	            null,
 	            _react2.default.createElement('textarea', { defaultValue: this.state.game.finalJeopardy.question,
 	              placeholder: 'Final Jeopardy question',
-	              className: this.state.game.finalJeopardy.question ? this.state.game.finalJeopardy.question : "blink",
-	              style: { height: 50 + "px", width: 300 + "px" },
+	              className: this.state.game.finalJeopardy.question ? this.state.game.finalJeopardy.question : 'blink',
+	              style: { height: 50 + 'px', width: 300 + 'px' },
 	              onChange: function onChange(event) {
 	                _this3.setState({
 	                  game: _extends({}, _this3.state.game, {
@@ -28739,7 +28672,7 @@
 	            null,
 	            _react2.default.createElement('input', { defaultValue: this.state.game.finalJeopardy.answer,
 	              placeholder: 'Final Jeopardy answer',
-	              className: this.state.game.finalJeopardy.answer ? this.state.game.finalJeopardy.answer : "blink",
+	              className: this.state.game.finalJeopardy.answer ? this.state.game.finalJeopardy.answer : 'blink',
 	              type: 'text',
 	              onChange: function onChange(event) {
 	                _this3.setState({
@@ -28774,7 +28707,7 @@
 	          _react2.default.createElement(
 	            'div',
 	            null,
-	            _react2.default.createElement('textarea', { defaultValue: questionObj.question, style: { height: 50 + "px", width: 300 + "px" }, id: 'question', ref: 'question', placeholder: 'Question' })
+	            _react2.default.createElement('textarea', { defaultValue: questionObj.question, style: { height: 50 + 'px', width: 300 + 'px' }, id: 'question', ref: 'question', placeholder: 'Question' })
 	          ),
 	          _react2.default.createElement(
 	            'div',
@@ -28821,7 +28754,7 @@
 	          _react2.default.createElement(
 	            'span',
 	            { className: 'back-button', onClick: function onClick() {
-	                _reactRouter.hashHistory.push("/");
+	                _reactRouter.hashHistory.push('/');
 	              } },
 	            'MENU'
 	          ),
@@ -28831,27 +28764,27 @@
 	            _react2.default.createElement(
 	              'span',
 	              { className: 'tab',
-	                style: this.state.currentTab === "jeopardy" ? { borderBottom: 5 + "px solid #147bce" } : null,
+	                style: this.state.currentTab === 'jeopardy' ? { borderBottom: 5 + 'px solid #147bce' } : null,
 	                onClick: function onClick() {
-	                  _this3.handleTabSwitch("jeopardy");
+	                  _this3.handleTabSwitch('jeopardy');
 	                } },
 	              'Jeopardy'
 	            ),
 	            _react2.default.createElement(
 	              'span',
 	              { className: 'tab',
-	                style: this.state.currentTab === "doubleJeopardy" ? { borderBottom: 5 + "px solid #147bce" } : null,
+	                style: this.state.currentTab === 'doubleJeopardy' ? { borderBottom: 5 + 'px solid #147bce' } : null,
 	                onClick: function onClick() {
-	                  _this3.handleTabSwitch("doubleJeopardy");
+	                  _this3.handleTabSwitch('doubleJeopardy');
 	                } },
 	              'Double Jeopardy'
 	            ),
 	            _react2.default.createElement(
 	              'span',
 	              { className: 'tab',
-	                style: this.state.currentTab === "finalJeopardy" ? { borderBottom: 5 + "px solid #147bce" } : null,
+	                style: this.state.currentTab === 'finalJeopardy' ? { borderBottom: 5 + 'px solid #147bce' } : null,
 	                onClick: function onClick() {
-	                  _this3.handleTabSwitch("finalJeopardy");
+	                  _this3.handleTabSwitch('finalJeopardy');
 	                } },
 	              'Final Jeopardy'
 	            )
@@ -28886,7 +28819,7 @@
 	  var vals = questions.map(function (question, i) {
 	    return _react2.default.createElement(
 	      'span',
-	      { className: question.question && question.answer ? "edit-question" : "edit-question blink",
+	      { className: question.question && question.answer ? 'edit-question' : 'edit-question blink',
 	        onClick: function onClick() {
 	          editQuestion(categoryIndex, i);
 	        },
@@ -28897,7 +28830,7 @@
 	        'span',
 	        null,
 	        '\xA0',
-	        _react2.default.createElement('i', { className: 'fa fa-check', style: { color: "#67d067" } })
+	        _react2.default.createElement('i', { className: 'fa fa-check', style: { color: '#67d067' } })
 	      ) : null
 	    );
 	  });

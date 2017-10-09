@@ -75,15 +75,15 @@ app.on('ready', function() {
   
   scoreboardWindow.loadURL('file://' + __dirname + '/scoreboard.html');
 
-  ipc.on("launch-scoreboard", function(event, args) {
-    scoreboardWindow.send("launch-scoreboard", {
+  ipc.on('launch-scoreboard', function(event, args) {
+    scoreboardWindow.send('launch-scoreboard', {
       players: args.players
     });
     scoreboardWindow.show();
   });
 
-  ipc.on("update-scoreboard", function(event, args) {
-    scoreboardWindow.send("update-scoreboard", {
+  ipc.on('update-scoreboard', function(event, args) {
+    scoreboardWindow.send('update-scoreboard', {
       players: args
     });
   });
@@ -91,7 +91,7 @@ app.on('ready', function() {
 });
 
 ipc.on('open-file-dialog', function(event, arg) {
-  var path = dialog.showOpenDialog(mainWindow, { properties: ["openFile"]});
+  var path = dialog.showOpenDialog(mainWindow, { properties: ['openFile']});
   if (path) {
     var data = readFile(path[0]);
     event.sender.send('open-file-reply', {name: path[0], fileContents: data});
@@ -121,5 +121,5 @@ ipc.on('save-file-dialog', function(event, arg) {
 
 
 function readFile(path) {
-  return fs.readFileSync(path, "utf-8");
+  return fs.readFileSync(path, 'utf-8');
 }
