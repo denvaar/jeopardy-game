@@ -1,24 +1,27 @@
 import React, { Component } from 'react';
 
 
-class Categories extends Component {
-  constructor(props) {
-    super(props);
-  }
+export default props => (
+  <tr>
+    {
+      props.data.map((category, i) => (<th key={i}> {category} </th>))
+    }
+  </tr>
+)
+// class Categories extends Component {
+//   render() {
+//     const categories = this.props.data.map((category, i) => {
+//       return (
+//         <th key={i}>{category}</th>
+//       );
+//     });
 
-  render() {
-    let categories = this.props.data.map((category, i) => {
-      return (
-        <th key={i}>{category}</th>
-      );
-    });
+//     return (
+//       <tr>
+//         {categories}
+//       </tr>
+//     );
+//   }
+// }
 
-    return (
-      <tr>
-        {categories}
-      </tr>
-    );
-  }
-}
-
-export default Categories;
+// export default Categories;
