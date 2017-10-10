@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import {ipcRenderer} from  'electron';
+import { ipcRenderer } from  'electron';
 import { hashHistory } from 'react-router';
 
 import Categories from '../containers/Categories';
@@ -16,10 +16,10 @@ class Setup extends Component {
       gameName: undefined,
       creatingGame: false
     };
-    this.onStartGame = this.onStartGame.bind(this); 
+    this.onStartGame = this.onStartGame.bind(this);
     this.createGame = this.createGame.bind(this);
     this.loadFileListener = this.loadFileListener.bind(this);
-    
+
     ipcRenderer.on('open-file-reply', this.loadFileListener);
 
   }
@@ -42,7 +42,7 @@ class Setup extends Component {
   }
 
   createGame() {
-    this.setState({creatingGame: true });
+    this.setState({ creatingGame: true });
     hashHistory.push("/edit");
   }
 
@@ -51,14 +51,14 @@ class Setup extends Component {
   }
 
   onStartGame() {
-    
+
     ipcRenderer.send('launch-admin-pannel', {
       players: this.props.players.map(player => {return player.name})
     });
     ipcRenderer.send("launch-scoreboard", {
       players: this.props.players
     });
-    
+
     this.props.loadGameData(this.state.data);
     hashHistory.push("/play");
   }
@@ -85,8 +85,8 @@ class Setup extends Component {
   }
 }
 
-const mapStateToProps = (state) => {
-  return {  
+const mapStateToProps = state => {
+  return {
     players: state.appReducer.players
   };
 }
