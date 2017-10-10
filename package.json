@@ -7,7 +7,8 @@
     "build": "webpack",
     "watch": "./node_modules/.bin/webpack-dev-server --host 0.0.0.0 --port 3000",
     "start": "electron .",
-    "start-dev": "webpack -w & electron ."
+    "start-dev": "webpack -w & electron .",
+    "test": "./node_modules/mocha/bin/mocha"
   },
   "author": "Denver Smith",
   "license": "MIT",
@@ -34,7 +35,9 @@
     "electron-prebuilt": "^1.4.9",
     "file-loader": "^0.9.0",
     "fs": "0.0.1-security",
+    "mocha": "^4.0.1",
     "react-hot-loader": "^3.0.0-beta.6",
+    "spectron": "^3.7.2",
     "style-loader": "^0.13.1",
     "url-loader": "^0.5.7",
     "webpack": "^1.13.3",
