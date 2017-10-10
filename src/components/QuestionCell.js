@@ -1,18 +1,10 @@
-import React, { Component } from 'react';
+import React from 'react';
 
-
-class QuestionCell extends Component {
-  constructor(props) {
-    super(props);
+// Made into a pure function, as class notation was not necessary
+export default props => {
+  if(props.isAnswered) {
+    return <td></td>
   }
-
-  render() {
-    let markup = <td onClick={() => {this.props.openQuestion(this.props.category, this.props.value);} }>${this.props.value}</td>;
-    if (this.props.isAnswered) {
-      markup = <td></td>;
-    }
-    return markup;
-  }
+  return <td onClick={() => {props.openQuestion(props.category, props.value);} }>${props.value}</td>
 }
 
-export default QuestionCell;
