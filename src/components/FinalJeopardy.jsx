@@ -12,12 +12,12 @@ class FinalJeopardy extends Component {
       showCategory: false,
       totalWagers: 0
     };
-  
+
     this.setFinalAnswer = this.setFinalAnswer.bind(this);
 
     ipcRenderer.on('update-final-score', this.setFinalAnswer);
   }
-  
+
   componentWillUnmount() {
     ipcRenderer.removeAllListeners(['update-final-score']);
   }
@@ -43,7 +43,7 @@ class FinalJeopardy extends Component {
               } else {
                 this.setState({totalWagers: this.state.totalWagers + 1});
                 event.target.classList.add('players-disabled');
-                this.refs[`${player.name}_wager`].classList.add('players-disabled'); 
+                this.refs[`${player.name}_wager`].classList.add('players-disabled');
                 this.props.setPlayerWager(wager, player.name);
               }
             }}>
@@ -63,7 +63,7 @@ class FinalJeopardy extends Component {
         }
         {this.state.showCategory && !this.state.showQuestion &&
         <div>
-          <p>{this.props.game.finalJeopardy.category}</p> 
+          <p>{this.props.game.finalJeopardy.category}</p>
           {players}
           <button className={this.state.totalWagers == this.props.players.filter(p => p.score > 0).length ? "" : "players-disabled"}
             onClick={() => {
@@ -82,7 +82,7 @@ class FinalJeopardy extends Component {
   }
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
   return {
     game: state.appReducer.game,
     players: state.appReducer.players,

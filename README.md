@@ -3,7 +3,9 @@ Create and play your own game of Jeopardy. I threw this together to play with my
 
 # Installation
 There's an app in the `dist` directory.
-To run the app for developemnt, comment out the neccessary things and run:
+To run the app for development, comment out the necessary things and run:
+
+```npm install```
 
 ```npm run-script watch```
 

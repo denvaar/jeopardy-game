@@ -28,8 +28,8 @@ class Row extends Component {
   }
 }
 
-const mapStateToProps = (state) => {
-  const currentVersion = state.appReducer.currentVersion;
+const mapStateToProps = state => {
+  let currentVersion = state.appReducer.currentVersion;
 
   return {
     categories: state.appReducer.game[currentVersion].categories,

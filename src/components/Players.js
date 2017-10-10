@@ -32,9 +32,9 @@ class Players extends Component {
   }
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
   return {
-    players: state.appReducer.players   
+    players: state.appReducer.players
   };
 }
 

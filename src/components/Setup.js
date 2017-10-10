@@ -14,10 +14,10 @@ class Setup extends Component {
       gameName: undefined,
       creatingGame: false,
     };
-    this.onStartGame = this.onStartGame.bind(this); 
+    this.onStartGame = this.onStartGame.bind(this);
     this.createGame = this.createGame.bind(this);
     this.loadFileListener = this.loadFileListener.bind(this);
-    
+
     ipcRenderer.on('open-file-reply', this.loadFileListener);
 
   }
@@ -81,9 +81,9 @@ class Setup extends Component {
   }
 }
 
-const mapStateToProps = (state) => {
-  return {  
-    players: state.appReducer.players,
+const mapStateToProps = state => {
+  return {
+    players: state.appReducer.players
   };
 }
 

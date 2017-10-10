@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import {ipcRenderer} from  'electron';
+import { ipcRenderer } from  'electron';
 import { hashHistory } from 'react-router';
 
 import Setup from './Setup';
@@ -43,9 +43,10 @@ class App extends Component {
     };
     this.openQuestion = this.openQuestion.bind(this);
     /*this.closeQuestion = this.closeQuestion.bind(this);*/
-  
+
     ipcRenderer.on('update-score', (event, data) => {
       this.props.updateScore(data.value, data.player, this.state.category, this.state.showQuestion);
+
       ipcRenderer.send('update-scoreboard', this.props.players);
       const done = isBoardComplete(this.props.game[this.props.currentVersion].categories);
       
@@ -55,6 +56,7 @@ class App extends Component {
           doubleJeopardy: 1,
           finalJeopardy: 2
         });
+
         const nextVersion = dict[this.props.currentVersion] + 1 
         this.props.setCurrentVersion(Object.keys(dict)[nextVersion]);
         if (Object.keys(dict)[nextVersion] === 'finalJeopardy') {
@@ -64,7 +66,7 @@ class App extends Component {
         this.setState({ showQuestion: false });
       }
     });
-  
+
   }
 
   openQuestion(category, value) {
@@ -72,6 +74,7 @@ class App extends Component {
     const question = this.props.game[this.props.currentVersion].categories[category].find(question => question.value === value);
     this.setState({ showQuestion: question, category });
     /* send answer to admin pannel */
+
     ipcRenderer.send('send-answer-to-admin', { ...question, lastCorrectPlayer: this.props.lastCorrectPlayer });
   }
 
@@ -102,7 +105,7 @@ class App extends Component {
   }
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
   return {
     game: state.appReducer.game,
     players: state.appReducer.players,
@@ -112,4 +115,3 @@ const mapStateToProps = (state) => {
 }
 
 export default connect(mapStateToProps, { updateScore, setCurrentVersion })(App);
-
