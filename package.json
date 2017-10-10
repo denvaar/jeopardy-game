@@ -6,8 +6,8 @@
   "scripts": {
     "build": "webpack",
     "watch": "./node_modules/.bin/webpack-dev-server --host 0.0.0.0 --port 3000",
-    "start": "./node_modules/electron-prebuilt/dist/Electron.app/Contents/MacOS/Electron .",
-    "start-dev": "webpack -w & ./node_modules/electron-prebuilt/dist/Electron.app/Contents/MacOS/Electron ."
+    "start": "electron .",
+    "start-dev": "webpack -w & electron ."
   },
   "author": "Denver Smith",
   "license": "MIT",
