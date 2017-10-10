@@ -30,7 +30,7 @@ class Row extends Component {
   }
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
   let currentVersion = state.appReducer.currentVersion;
 
   return {
