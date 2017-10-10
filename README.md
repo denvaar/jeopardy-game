@@ -15,6 +15,12 @@ To package the app for OSX:
 
 ```electron-packager ./jeopardy Jeopardy --version 1.2.4 --platform=darwin --out=[insert output path here] --arch=all --ignore="(node_modules)"```
 
+# Testing
+
+First unzip the zip file in dist/ and then run
+
+```npm test```
+
 ## Screen shots
 <img width="635" alt="screen shot 2016-12-17 at 3 46 48 pm" src="https://cloud.githubusercontent.com/assets/10538978/21290243/3abb4ae8-c470-11e6-83cb-67bdc88f6952.png">
 <img width="542" alt="screen shot 2016-12-17 at 3 53 04 pm" src="https://cloud.githubusercontent.com/assets/10538978/21290266/e93ddd92-c470-11e6-8379-c8787b6de75d.png">
