@@ -3,10 +3,8 @@ import { connect } from 'react-redux';
 import { ipcRenderer } from  'electron';
 import { hashHistory } from 'react-router';
 
-import Categories from '../containers/Categories';
-import Players from './players';
+import Players from './Players';
 import { loadGameData } from '../actions/actions';
-
 
 class Setup extends Component {
   constructor(props) {
@@ -14,7 +12,7 @@ class Setup extends Component {
     this.state = {
       data: undefined,
       gameName: undefined,
-      creatingGame: false
+      creatingGame: false,
     };
     this.onStartGame = this.onStartGame.bind(this);
     this.createGame = this.createGame.bind(this);
@@ -28,54 +26,52 @@ class Setup extends Component {
     ipcRenderer.removeAllListeners(['open-file-reply']);
   }
 
-  loadFileListener(event, data) {
-    if(data.fileContents){
-      try {
-        this.setState({
-          data: JSON.parse(data.fileContents),
-          gameName: data.name
-        });
-      } catch(e) {
-        alert("Could not load game file. " + e);
-      }
-    }
-  }
-
-  createGame() {
-    this.setState({ creatingGame: true });
-    hashHistory.push("/edit");
+  onStartGame() {
+    ipcRenderer.send('launch-admin-pannel', {
+      players: this.props.players.map(player => {return player.name})
+    });
+    ipcRenderer.send('launch-scoreboard', {
+      players: this.props.players
+    });
+    this.props.loadGameData(this.state.data);
+    hashHistory.push('/play');
   }
 
   onLoadGame() {
     ipcRenderer.send('open-file-dialog');
   }
 
-  onStartGame() {
+  createGame() {
+    this.setState({creatingGame: true });
+    hashHistory.push('/edit');
+  }
 
-    ipcRenderer.send('launch-admin-pannel', {
-      players: this.props.players.map(player => {return player.name})
-    });
-    ipcRenderer.send("launch-scoreboard", {
-      players: this.props.players
-    });
-
-    this.props.loadGameData(this.state.data);
-    hashHistory.push("/play");
+  loadFileListener(event, data) {
+    if (data.fileContents){
+      try {
+        this.setState({
+          data: JSON.parse(data.fileContents),
+          gameName: data.name
+        });
+      } catch (e) {
+        alert('Could not load game file. ' + e);
+      }
+    }
   }
 
   render() {
     return (
-      <div className="game-container">
+      <div className='game-container'>
         {!this.state.creatingGame &&
-          <div className="setup-screen">
+          <div className='setup-screen'>
             <h1>JEOPARDY!</h1>
             <Players />
             <br/>
-            <div className="file-info">Game file: {this.state.gameName || "--"}</div>
-            <div className="menu">
+            <div className='file-info'>Game file: {this.state.gameName || '--'}</div>
+            <div className='menu'>
               <button onClick={this.onLoadGame}>Load Game</button>
               <button onClick={this.createGame}>Create/Edit Game</button>
-              <button className={this.state.data && this.props.players.length > 1 ? "start-button": "disabled-button"}
+              <button className={this.state.data && this.props.players.length > 1 ? 'start-button': 'disabled-button'}
                       onClick={this.onStartGame}>Play!</button>
             </div>
           </div>

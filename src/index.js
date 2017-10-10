@@ -22,10 +22,10 @@ const createStoreWithMiddleware = compose(
 ReactDOM.render(
   <Provider store={createStoreWithMiddleware(reducers)}>
     <Router history={hashHistory}>
-      <Route path="/" component={Setup} />
-      <Route path="/play" component={App} />
-      <Route path="/play/finalJeopardy" component={FinalJeopardy} />
-      <Route path="/edit" component={Edit} />
+      <Route path='/' component={Setup} />
+      <Route path='/play' component={App} />
+      <Route path='/play/finalJeopardy' component={FinalJeopardy} />
+      <Route path='/edit' component={Edit} />
     </Router>
   </Provider>,
   document.getElementById('app')
