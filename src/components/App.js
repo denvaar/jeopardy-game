@@ -3,8 +3,6 @@ import { connect } from 'react-redux';
 import { ipcRenderer } from  'electron';
 import { hashHistory } from 'react-router';
 
-import Setup from './Setup';
-import Row from './Row';
 import Question from './Question';
 import Categories from '../containers/Categories';
 import RowContainer from '../containers/RowContainer';
@@ -16,14 +14,14 @@ const getAllQuestions = (categories) => {
   let allQs = [];
   Object.keys(categories).forEach(category => {
     allQs = allQs.concat(categories[category])
-  })
+  });
   return allQs;
-}
+};
 
 const isBoardComplete = (categories) => {
-  const allQs = getAllQuestions(categories)
-  return !allQs.filter(question => !question.isAnswered).length
-}
+  const allQs = getAllQuestions(categories);
+  return !allQs.filter(question => !question.isAnswered).length;
+};
 
 const getCategories = (categories) => {
   const catObject = {};
@@ -51,18 +49,18 @@ class App extends Component {
       const done = isBoardComplete(this.props.game[this.props.currentVersion].categories);
       
       if (done && data.value >= 0) {
-        const dict = ({
+        let dict = ({
           jeopardy: 0,
           doubleJeopardy: 1,
           finalJeopardy: 2
         });
 
-        const nextVersion = dict[this.props.currentVersion] + 1 
+        const nextVersion = dict[this.props.currentVersion] + 1;
         this.props.setCurrentVersion(Object.keys(dict)[nextVersion]);
         if (Object.keys(dict)[nextVersion] === 'finalJeopardy') {
           hashHistory.push('/play/finalJeopardy');
         }
-      } else if (data.value >= 0) { 
+      } else if (data.value >= 0) {
         this.setState({ showQuestion: false });
       }
     });
@@ -80,7 +78,7 @@ class App extends Component {
 
 
   render() {
-    if (this.props.currentVersion === 'finalJeopardy') return <div></div>;
+    if (this.props.currentVersion === 'finalJeopardy') return <div />;
     const showGame = (Object.keys(this.props.game[this.props.currentVersion].categories).length > 0);
     const showQuestion = this.state.showQuestion;
     return (
@@ -112,6 +110,6 @@ const mapStateToProps = state => {
     lastCorrectPlayer: state.appReducer.lastCorrectPlayer,
     currentVersion: state.appReducer.currentVersion
   };
-}
+};
 
 export default connect(mapStateToProps, { updateScore, setCurrentVersion })(App);

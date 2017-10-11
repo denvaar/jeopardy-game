@@ -8,11 +8,11 @@
   </head>
   <body style="background: black;">
     <div class="scoreboard"></div>
-    
+
     <script>
-      var electron = require("electron");
-      var ipcRenderer = electron.ipcRenderer;
-      var remote = electron.remote;
+      const electron = require("electron");
+      const ipcRenderer = electron.ipcRenderer;
+      const remote = electron.remote;
 
       ipcRenderer.on("launch-scoreboard", function(event, data) {
         createScoreboard(data.players);
@@ -23,11 +23,11 @@
       });
 
       function createScoreboard(players) {
-        var scoreboard = document.querySelector(".scoreboard");
+        const scoreboard = document.querySelector(".scoreboard");
         scoreboard.innerHTML = "";
 
         players.forEach(function(p) {
-          var playerDiv = document.createElement("DIV");
+          const playerDiv = document.createElement("DIV");
           playerDiv.innerHTML = `
             <p class="player-text">${p.name}</p>
             <p class="score">$ ${p.score}</p>
@@ -38,6 +38,6 @@
       }
 
     </script>
-  
+
   </body>
 </html>

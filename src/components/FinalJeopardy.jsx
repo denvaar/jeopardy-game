@@ -65,7 +65,7 @@ class FinalJeopardy extends Component {
         <div>
           <p>{this.props.game.finalJeopardy.category}</p>
           {players}
-          <button className={this.state.totalWagers == this.props.players.filter(p => p.score > 0).length ? "" : "players-disabled"}
+          <button className={this.state.totalWagers === this.props.players.filter(p => p.score > 0).length ? "" : "players-disabled"}
             onClick={() => {
               this.setState({showQuestion: true});
               ipcRenderer.send('show-final-jeopardy-question', {
@@ -87,6 +87,6 @@ const mapStateToProps = state => {
     game: state.appReducer.game,
     players: state.appReducer.players,
   };
-}
+};
 
 export default connect(mapStateToProps, {setPlayerWager, updateFinalScore})(FinalJeopardy);

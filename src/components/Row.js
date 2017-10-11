@@ -35,6 +35,6 @@ const mapStateToProps = state => {
     categories: state.appReducer.game[currentVersion].categories,
     currentVersion
   };
-}
+};
 
 export default connect(mapStateToProps, {})(Row);

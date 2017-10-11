@@ -26,7 +26,7 @@ class Players extends Component {
       <div>
         <h2>Players</h2>
         {players}
-        <input type='text' placeholder='Add player...' onKeyUp={this.handleInput}></input>
+        <input type='text' placeholder='Add player...' onKeyUp={this.handleInput} />
       </div>
     );
   }
@@ -36,6 +36,6 @@ const mapStateToProps = state => {
   return {
     players: state.appReducer.players
   };
-}
+};
 
 export default connect(mapStateToProps, { addPlayer })(Players);

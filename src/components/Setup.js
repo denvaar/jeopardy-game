@@ -85,6 +85,6 @@ const mapStateToProps = state => {
   return {
     players: state.appReducer.players
   };
-}
+};
 
 export default connect(mapStateToProps, { loadGameData })(Setup);
