@@ -12,12 +12,12 @@ class FinalJeopardy extends Component {
       showCategory: false,
       totalWagers: 0
     };
-  
+
     this.setFinalAnswer = this.setFinalAnswer.bind(this);
 
     ipcRenderer.on('update-final-score', this.setFinalAnswer);
   }
-  
+
   componentWillUnmount() {
     ipcRenderer.removeAllListeners(['update-final-score']);
   }
@@ -82,7 +82,7 @@ class FinalJeopardy extends Component {
   }
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
   return {
     game: state.appReducer.game,
     players: state.appReducer.players,
