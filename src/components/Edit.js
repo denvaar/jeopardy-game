@@ -326,4 +326,4 @@ const Questions = ({ categoryIndex, questions, editQuestion }) => {
       {vals}
     </div>
   );
-}
+};

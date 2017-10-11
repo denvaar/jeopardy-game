@@ -14,7 +14,7 @@ const getAllQuestions = (categories) => {
   let allQs = [];
   Object.keys(categories).forEach(category => {
     allQs = allQs.concat(categories[category])
-  })
+  });
   return allQs;
 };
 
@@ -55,7 +55,7 @@ class App extends Component {
           finalJeopardy: 2
         });
 
-        const nextVersion = dict[this.props.currentVersion] + 1
+        const nextVersion = dict[this.props.currentVersion] + 1;
         this.props.setCurrentVersion(Object.keys(dict)[nextVersion]);
         if (Object.keys(dict)[nextVersion] === 'finalJeopardy') {
           hashHistory.push('/play/finalJeopardy');
@@ -78,7 +78,7 @@ class App extends Component {
 
 
   render() {
-    if (this.props.currentVersion === 'finalJeopardy') return <div></div>;
+    if (this.props.currentVersion === 'finalJeopardy') return <div />;
     const showGame = (Object.keys(this.props.game[this.props.currentVersion].categories).length > 0);
     const showQuestion = this.state.showQuestion;
     return (
