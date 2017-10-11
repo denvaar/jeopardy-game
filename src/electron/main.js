@@ -3,11 +3,11 @@ const app = electron.app;
 const BrowserWindow = electron.BrowserWindow;
 
 const ipc = electron.ipcMain;
-var dialog = electron.dialog;
-var fs = require('fs');
+const dialog = electron.dialog;
+const fs = require('fs');
 
 app.on('window-all-closed', function() {
-  if (process.platform != 'darwin') app.quit();
+  if (process.platform !== 'darwin') app.quit();
 });
 
 app.on('ready', function() {
@@ -26,8 +26,8 @@ app.on('ready', function() {
   mainWindow.on('did-navigate-in-page', function(event) {
     event.preventDefault(); // prevent ability to refresh page
   });
-
-  var adminWindow = new BrowserWindow({
+  
+  const adminWindow = new BrowserWindow({
     x: 0,
     y: 0,
     width: 500,
@@ -64,7 +64,7 @@ app.on('ready', function() {
     adminWindow.show();
   });
   
-  var scoreboardWindow = new BrowserWindow({
+  const scoreboardWindow = new BrowserWindow({
     x: 50,
     y: 50,
     width: 300,
@@ -91,9 +91,9 @@ app.on('ready', function() {
 });
 
 ipc.on('open-file-dialog', function(event, arg) {
-  var path = dialog.showOpenDialog(mainWindow, { properties: ["openFile"]});
+  const path = dialog.showOpenDialog(mainWindow, { properties: ["openFile"]});
   if (path) {
-    var data = readFile(path[0]);
+    const data = readFile(path[0]);
     event.sender.send('open-file-reply', {name: path[0], fileContents: data});
   }
 });
@@ -110,11 +110,9 @@ ipc.on('save-file-dialog', function(event, arg) {
     if (fileName) {
       fs.writeFile(fileName, arg.data, function(error) {
         if (error) {
-          alert('Something went wrong while trying to save the file: ' + erorr.message);
+          alert('Something went wrong while trying to save the file: ' + error.message);
         }
       });
-    } else {
-      return;
     }
   });
 });

@@ -132,7 +132,7 @@ class Edit extends Component {
   }
 
   handleTabSwitch(tab) {
-    if (tab != "finalJeopardy" && this.state.currentTab != "finalJeopardy") {
+    if (tab !== "finalJeopardy" && this.state.currentTab !== "finalJeopardy") {
       for (let i = 0; i < 6; i++) {
         let category = this.state.game[tab].categories[i][0].category;
         if (category) {
@@ -173,18 +173,18 @@ class Edit extends Component {
   }
 
   render() {
-    if (this.state.editingQuestion && this.state.currentTab != "finalJeopardy") { 
-      var questionObj = this.state.game[this.state.currentTab].categories[this.state.editingQuestion.categoryId][this.state.editingQuestion.questionId];
+    if (this.state.editingQuestion && this.state.currentTab !== "finalJeopardy") {
+      const questionObj = this.state.game[this.state.currentTab].categories[this.state.editingQuestion.categoryId][this.state.editingQuestion.questionId];
     }
 
-    if (this.state.currentTab != "finalJeopardy") {
-      var categories = Object.keys(this.state.game[this.state.currentTab].categories).map((categoryId, i) => {
+    if (this.state.currentTab !== "finalJeopardy") {
+      const categories = Object.keys(this.state.game[this.state.currentTab].categories).map((categoryId, i) => {
         let categoryName = this.state.game[this.state.currentTab].categories[categoryId].find(cat => {
-          return cat.category != "";
+          return cat.category !== "";
         });
         return (
           <div key={i} className="category-section">
-            <input 
+            <input
                    value={categoryName && categoryName.category || ""}
                    placeholder="Category title"
                    className={categoryName && categoryName.category ? "" : "blink"}
@@ -198,8 +198,8 @@ class Edit extends Component {
           </div>
         );
       });
-    } else { 
-      var categories = (
+    } else {
+      const categories = (
         <div>
           <div>
             <input defaultValue={this.state.game.finalJeopardy.category}
@@ -336,7 +336,7 @@ const Questions = ({ categoryIndex, questions, editQuestion }) => {
                  onClick={() => {editQuestion(categoryIndex, i)}}
                  key={i}>
              ${question.value}
-             {(question.question && question.answer) ? <span>&nbsp;<i className="fa fa-check" style={{color: "#67d067"}}></i></span> : null }
+             {(question.question && question.answer) ? <span>&nbsp;<i className="fa fa-check" style={{color: "#67d067"}} /></span> : null }
            </span>
   });
   return (
@@ -344,4 +344,4 @@ const Questions = ({ categoryIndex, questions, editQuestion }) => {
       {vals}
     </div>
   );
-}
+};

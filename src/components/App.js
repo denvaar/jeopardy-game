@@ -3,8 +3,6 @@ import { connect } from 'react-redux';
 import {ipcRenderer} from  'electron';
 import { hashHistory } from 'react-router';
 
-import Setup from './Setup';
-import Row from './Row';
 import Question from './Question';
 import Categories from '../containers/Categories';
 import RowContainer from '../containers/RowContainer';
@@ -40,12 +38,12 @@ class App extends Component {
           doubleJeopardy: 1,
           finalJeopardy: 2
         });
-        let nextVersion = dict[this.props.currentVersion] + 1 
+        let nextVersion = dict[this.props.currentVersion] + 1;
         this.props.setCurrentVersion(Object.keys(dict)[nextVersion]);
         if (Object.keys(dict)[nextVersion] === "finalJeopardy") {
           hashHistory.push("/play/finalJeopardy");
         }
-      } else { 
+      } else {
         if (data.value >= 0) {
           this.setState({showQuestion: false});
         }
@@ -68,7 +66,7 @@ class App extends Component {
 
 
   render() {
-    if (this.props.currentVersion === "finalJeopardy") return <div></div>;
+    if (this.props.currentVersion === "finalJeopardy") return <div />;
     let showGame = (Object.keys(this.props.game[this.props.currentVersion].categories).length > 0);
     let showQuestion = this.state.showQuestion;
     return (
@@ -101,7 +99,7 @@ const mapStateToProps = (state) => {
     lastCorrectPlayer: state.appReducer.lastCorrectPlayer,
     currentVersion: state.appReducer.currentVersion
   };
-}
+};
 
 export default connect(mapStateToProps, { updateScore, setCurrentVersion })(App);
 

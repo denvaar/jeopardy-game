@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import {ipcRenderer} from  'electron';
 import { hashHistory } from 'react-router';
 
-import Categories from '../containers/Categories';
 import Players from './players';
 import { loadGameData } from '../actions/actions';
 
@@ -16,7 +15,7 @@ class Setup extends Component {
       gameName: undefined,
       creatingGame: false
     };
-    this.onStartGame = this.onStartGame.bind(this); 
+    this.onStartGame = this.onStartGame.bind(this);
     this.createGame = this.createGame.bind(this);
     this.loadFileListener = this.loadFileListener.bind(this);
     
@@ -86,9 +85,9 @@ class Setup extends Component {
 }
 
 const mapStateToProps = (state) => {
-  return {  
+  return {
     players: state.appReducer.players
   };
-}
+};
 
 export default connect(mapStateToProps, { loadGameData })(Setup);

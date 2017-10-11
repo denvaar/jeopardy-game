@@ -6,9 +6,9 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css">
   </head>
   <body style="margin: 0;background: #fff;">
-    
+
     <div class="admin-pannel">
-      <div class="message"> 
+      <div class="message">
         <i id="message"></i>
       </div>
       <div class="current-question">
@@ -18,18 +18,18 @@
       <button id="noAnswer" style="float:right">No answer</button>
       <div class="players players-disabled"></div>
     </div>
-    
+
     <script>
-      var electron = require('electron');
-      var ipcRenderer = electron.ipcRenderer;
-      var remote = electron.remote;
-      var value = 0;
-      var totalPlayers = 0;
-      var playersLeft = 0;
-      var lastCorrectPlayer = "";
+      const electron = require('electron');
+      const ipcRenderer = electron.ipcRenderer;
+      const remote = electron.remote;
+      let value = 0;
+      let totalPlayers = 0;
+      let playersLeft = 0;
+      let lastCorrectPlayer = "";
 
       ipcRenderer.on('send-answer-to-admin-reply', function(event, data) {
-        
+
         lastCorrectPlayer = data.lastCorrectPlayer;
         document.getElementById('question').innerHTML = data.question;
         document.getElementById('answer').innerHTML = data.answer;
@@ -37,18 +37,18 @@
         value = data.value;
         playersLeft = totalPlayers;
       });
-      
+
       ipcRenderer.on('show-final-jeopardy-question', function(event, data) {
         document.getElementById('question').innerHTML = data.question;
         document.getElementById('answer').innerHTML = data.answer;
         document.querySelector(".players").classList.remove("players-disabled");
         document.getElementById("message").innerHTML = "-- FINAL JEOPARDY --";
         document.getElementById("noAnswer").classList.add("players-disabled");
-        
+
         document.querySelectorAll(".correct-button").forEach(function(node) {
           node.removeEventListener("click", clickCorrectButton);
           node.addEventListener("click", function() {
-            var player = data.wagers.find(obj => obj.player === node.dataset.player);
+            const player = data.wagers.find(obj => obj.player === node.dataset.player);
             ipcRenderer.send("handle-final-answer", {
               player: player.player,
               isCorrect: true
@@ -61,7 +61,7 @@
         document.querySelectorAll(".incorrect-button").forEach(function(node) {
           node.removeEventListener("click", clickIncorrectButton);
           node.addEventListener("click", function() {
-            var player = data.wagers.find(obj => obj.player === node.dataset.player);
+            const player = data.wagers.find(obj => obj.player === node.dataset.player);
             ipcRenderer.send("handle-final-answer", {
               player: player.player,
               isCorrect: false
@@ -70,23 +70,23 @@
           });
         });
       });
-      
+
       ipcRenderer.on('launch-admin-pannel', function(event, data) {
         document.getElementById("message").innerHTML = data.players[0] + " has control of the board";
         setupPlayers(data.players);
       });
-      
+
       function clickCorrectButton() {
         ipcRenderer.send("handle-answer", {
           player: this.dataset.player,
           value: value
         });
-        document.getElementById("question").innerHTML = ""; 
-        document.getElementById("answer").innerHTML = ""; 
+        document.getElementById("question").innerHTML = "";
+        document.getElementById("answer").innerHTML = "";
         document.querySelectorAll(".player").forEach(function(playerDiv) {
           playerDiv.classList.remove("players-disabled");
         });
-        document.querySelector(".players").classList.add("players-disabled"); 
+        document.querySelector(".players").classList.add("players-disabled");
         document.getElementById("message").innerHTML = this.dataset.player + " has control of the board";
       }
 
@@ -103,21 +103,21 @@
             player: this.dataset.player,
             value: 0,
           });
-          document.getElementById("question").innerHTML = ""; 
-          document.getElementById("answer").innerHTML = ""; 
+          document.getElementById("question").innerHTML = "";
+          document.getElementById("answer").innerHTML = "";
           document.querySelectorAll(".player").forEach(function(playerDiv) {
             playerDiv.classList.remove("players-disabled");
           });
-          document.querySelector(".players").classList.add("players-disabled"); 
+          document.querySelector(".players").classList.add("players-disabled");
           document.getElementById("message").innerHTML = lastCorrectPlayer + " has control of the board";
         }
       }
 
       function setupPlayers(players) {
-        var targetDiv = document.querySelector(".players");
+        const targetDiv = document.querySelector(".players");
         players.forEach(player => {
           totalPlayers += 1;
-          var playerDiv = document.createElement("DIV");
+          const playerDiv = document.createElement("DIV");
           playerDiv.innerHTML = `
             <button data-player="${player}" class="correct-button"><i class="fa fa-check-circle fa-2x"></i></button>
             <span>${player}</span>
@@ -133,14 +133,14 @@
             player: document.querySelector(".correct-button").dataset.player,
             value: 0
           });
-          document.getElementById("question").innerHTML = ""; 
-          document.getElementById("answer").innerHTML = ""; 
+          document.getElementById("question").innerHTML = "";
+          document.getElementById("answer").innerHTML = "";
           document.querySelectorAll(".player").forEach(function(playerDiv) {
             playerDiv.classList.remove("players-disabled");
           });
-          document.querySelector(".players").classList.add("players-disabled"); 
+          document.querySelector(".players").classList.add("players-disabled");
         });
-        
+
         document.querySelectorAll(".correct-button").forEach(function(node) {
           node.addEventListener("click", clickCorrectButton);
         });
@@ -148,7 +148,7 @@
         document.querySelectorAll(".incorrect-button").forEach(function(node) {
           node.addEventListener("click", clickIncorrectButton);
         });
-      
+
       }
     </script>
   </body>

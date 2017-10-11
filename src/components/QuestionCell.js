@@ -9,7 +9,7 @@ class QuestionCell extends Component {
   render() {
     let markup = <td onClick={() => {this.props.openQuestion(this.props.category, this.props.value);} }>${this.props.value}</td>;
     if (this.props.isAnswered) {
-      markup = <td></td>;
+      markup = <td />;
     }
     return markup;
   }
