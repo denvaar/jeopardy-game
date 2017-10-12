@@ -5,10 +5,12 @@
   "main": "./src/electron/main.js",
   "scripts": {
     "build": "webpack",
-    "watch": "./node_modules/.bin/webpack-dev-server --host 0.0.0.0 --port 3000",
+    "watch":
+      "./node_modules/.bin/webpack-dev-server --host 0.0.0.0 --port 3000",
     "start": "electron .",
     "start-dev": "webpack -w & electron .",
-    "test": "./node_modules/mocha/bin/mocha"
+    "test": " ./node_modules/mocha/bin/mocha &&jest",
+    "test-watch": "jest --watch"
   },
   "author": "Denver Smith",
   "license": "MIT",
@@ -33,10 +35,14 @@
     "babel-preset-react": "^6.16.0",
     "css-loader": "^0.26.0",
     "electron-prebuilt": "^1.4.9",
+    "enzyme": "^3.1.0",
+    "enzyme-adapter-react-15": "^1.0.1",
     "file-loader": "^0.9.0",
     "fs": "0.0.1-security",
+    "jest": "^21.2.1",
     "mocha": "^4.0.1",
     "react-hot-loader": "^3.0.0-beta.6",
+    "react-test-renderer": "^15.6.2",
     "spectron": "^3.7.2",
     "style-loader": "^0.13.1",
     "url-loader": "^0.5.7",
