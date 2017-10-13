@@ -5,11 +5,11 @@
   "main": "./src/electron/main.js",
   "scripts": {
     "build": "webpack",
-    "watch":
-      "./node_modules/.bin/webpack-dev-server --host 0.0.0.0 --port 3000",
+    "watch": "./node_modules/.bin/webpack-dev-server --host 0.0.0.0 --port 3000",
     "start": "electron .",
     "start-dev": "webpack -w & electron .",
-    "test": " ./node_modules/mocha/bin/mocha &&jest",
+    "test": " ./node_modules/mocha/bin/mocha && jest",
+    "test-jest": "jest",
     "test-watch": "jest --watch"
   },
   "author": "Denver Smith",
