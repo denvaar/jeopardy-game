@@ -10,14 +10,16 @@ app.on('window-all-closed', function() {
   if (process.platform != 'darwin') app.quit();
 });
 
+const debug = process.env.NODE_ENV === 'development';
+
 app.on('ready', function() {
-  //BrowserWindow.addDevToolsExtension("/Users/denversmith/redux-dev-tools/");
+  if (debug) BrowserWindow.addDevToolsExtension("/Users/denversmith/redux-dev-tools/");
   mainWindow = new BrowserWindow({
     width: 1000,
     height: 700
   });
   mainWindow.loadURL('file://' + __dirname + '/../index.html');
-  //mainWindow.openDevTools();
+  if (debug) mainWindow.openDevTools();
   mainWindow.on('closed', function() {
     mainWindow = null;
     app.exit(0);
@@ -38,8 +40,8 @@ app.on('ready', function() {
   });
 
   adminWindow.loadURL('file://' + __dirname + '/admin.html');
-  //adminWindow.openDevTools();
-  
+  if (debug) adminWindow.openDevTools();
+
   ipc.on('send-answer-to-admin', function(event, args) {
     adminWindow.send('send-answer-to-admin-reply', {
       question: args.question,
@@ -48,7 +50,7 @@ app.on('ready', function() {
       lastCorrectPlayer: args.lastCorrectPlayer
     });
   });
-  
+
   ipc.on('show-final-jeopardy-question', function(event, args) {
     adminWindow.send('show-final-jeopardy-question', {
       question: args.question,
@@ -56,14 +58,14 @@ app.on('ready', function() {
       wagers: args.wagers
     });
   });
-  
+
   ipc.on('launch-admin-pannel', function(event, args) {
     adminWindow.send('launch-admin-pannel', {
       players: args.players
     });
     adminWindow.show();
   });
-  
+
   var scoreboardWindow = new BrowserWindow({
     x: 50,
     y: 50,
@@ -72,7 +74,7 @@ app.on('ready', function() {
     closable: false,
     show: false,
   });
-  
+
   scoreboardWindow.loadURL('file://' + __dirname + '/scoreboard.html');
 
   ipc.on('launch-scoreboard', function(event, args) {
