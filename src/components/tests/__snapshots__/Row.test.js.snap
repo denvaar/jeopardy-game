@@ -1,0 +1,579 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Row Component renders correctly 1`] = `
+ShallowWrapper {
+  "length": 1,
+  Symbol(enzyme.__root__): [Circular],
+  Symbol(enzyme.__unrendered__): <Row
+    categories={
+      Object {
+        "0": Array [
+          Object {
+            "answer": "a1a",
+            "category": "a",
+            "imageLink": "",
+            "isAnswered": false,
+            "question": "a1",
+            "value": 200,
+            "youtubeLink": "",
+          },
+          Object {
+            "answer": "a2a",
+            "category": "a",
+            "imageLink": "",
+            "isAnswered": false,
+            "question": "a2",
+            "value": 400,
+            "youtubeLink": "",
+          },
+          Object {
+            "answer": "a3a",
+            "category": "a",
+            "imageLink": "",
+            "isAnswered": false,
+            "question": "a3",
+            "value": 600,
+            "youtubeLink": "",
+          },
+          Object {
+            "answer": "a4a",
+            "category": "a",
+            "imageLink": "",
+            "isAnswered": false,
+            "question": "a4",
+            "value": 800,
+            "youtubeLink": "",
+          },
+          Object {
+            "answer": "a5a",
+            "category": "a",
+            "imageLink": "",
+            "isAnswered": false,
+            "question": "a5",
+            "value": 1000,
+            "youtubeLink": "",
+          },
+        ],
+        "1": Array [
+          Object {
+            "answer": "b1a",
+            "category": "b",
+            "imageLink": "",
+            "isAnswered": false,
+            "question": "b1",
+            "value": 200,
+            "youtubeLink": "",
+          },
+          Object {
+            "answer": "b1a",
+            "category": "b",
+            "imageLink": "",
+            "isAnswered": false,
+            "question": "b1",
+            "value": 400,
+            "youtubeLink": "",
+          },
+          Object {
+            "answer": "b1a",
+            "category": "b",
+            "imageLink": "",
+            "isAnswered": false,
+            "question": "b1",
+            "value": 600,
+            "youtubeLink": "",
+          },
+          Object {
+            "answer": "b1a",
+            "category": "b",
+            "imageLink": "",
+            "isAnswered": false,
+            "question": "b1",
+            "value": 800,
+            "youtubeLink": "",
+          },
+          Object {
+            "answer": "b1a",
+            "category": "b",
+            "imageLink": "",
+            "isAnswered": false,
+            "question": "b1",
+            "value": 1000,
+            "youtubeLink": "",
+          },
+        ],
+        "2": Array [
+          Object {
+            "answer": "b1a",
+            "category": "c",
+            "imageLink": "",
+            "isAnswered": false,
+            "question": "b1",
+            "value": 200,
+            "youtubeLink": "",
+          },
+          Object {
+            "answer": "b1a",
+            "category": "c",
+            "imageLink": "",
+            "isAnswered": false,
+            "question": "b1",
+            "value": 400,
+            "youtubeLink": "",
+          },
+          Object {
+            "answer": "b1a",
+            "category": "c",
+            "imageLink": "",
+            "isAnswered": false,
+            "question": "b1",
+            "value": 600,
+            "youtubeLink": "",
+          },
+          Object {
+            "answer": "b1a",
+            "category": "c",
+            "imageLink": "",
+            "isAnswered": false,
+            "question": "b1",
+            "value": 800,
+            "youtubeLink": "",
+          },
+          Object {
+            "answer": "b1a",
+            "category": "c",
+            "imageLink": "",
+            "isAnswered": false,
+            "question": "b1",
+            "value": 1000,
+            "youtubeLink": "",
+          },
+        ],
+        "3": Array [
+          Object {
+            "answer": "b1a",
+            "category": "d",
+            "imageLink": "",
+            "isAnswered": false,
+            "question": "b1",
+            "value": 200,
+            "youtubeLink": "",
+          },
+          Object {
+            "answer": "b1a",
+            "category": "d",
+            "imageLink": "",
+            "isAnswered": false,
+            "question": "b1",
+            "value": 400,
+            "youtubeLink": "",
+          },
+          Object {
+            "answer": "b1a",
+            "category": "d",
+            "imageLink": "",
+            "isAnswered": false,
+            "question": "b1",
+            "value": 600,
+            "youtubeLink": "",
+          },
+          Object {
+            "answer": "b1a",
+            "category": "d",
+            "imageLink": "",
+            "isAnswered": false,
+            "question": "b1",
+            "value": 800,
+            "youtubeLink": "",
+          },
+          Object {
+            "answer": "b1a",
+            "category": "d",
+            "imageLink": "",
+            "isAnswered": false,
+            "question": "b1",
+            "value": 1000,
+            "youtubeLink": "",
+          },
+        ],
+        "4": Array [
+          Object {
+            "answer": "b1a",
+            "category": "e",
+            "imageLink": "",
+            "isAnswered": false,
+            "question": "b1",
+            "value": 200,
+            "youtubeLink": "",
+          },
+          Object {
+            "answer": "b1a",
+            "category": "e",
+            "imageLink": "",
+            "isAnswered": false,
+            "question": "b1",
+            "value": 400,
+            "youtubeLink": "",
+          },
+          Object {
+            "answer": "b1a",
+            "category": "e",
+            "imageLink": "",
+            "isAnswered": false,
+            "question": "b1",
+            "value": 600,
+            "youtubeLink": "",
+          },
+          Object {
+            "answer": "b1a",
+            "category": "e",
+            "imageLink": "",
+            "isAnswered": false,
+            "question": "b1",
+            "value": 800,
+            "youtubeLink": "",
+          },
+          Object {
+            "answer": "b1a",
+            "category": "e",
+            "imageLink": "",
+            "isAnswered": false,
+            "question": "b1",
+            "value": 1000,
+            "youtubeLink": "",
+          },
+        ],
+        "5": Array [
+          Object {
+            "answer": "b1a",
+            "category": "f",
+            "imageLink": "",
+            "isAnswered": false,
+            "question": "b1",
+            "value": 200,
+            "youtubeLink": "",
+          },
+          Object {
+            "answer": "b1a",
+            "category": "f",
+            "imageLink": "",
+            "isAnswered": false,
+            "question": "b1",
+            "value": 400,
+            "youtubeLink": "",
+          },
+          Object {
+            "answer": "b1a",
+            "category": "f",
+            "imageLink": "",
+            "isAnswered": false,
+            "question": "b1",
+            "value": 600,
+            "youtubeLink": "",
+          },
+          Object {
+            "answer": "b1a",
+            "category": "f",
+            "imageLink": "",
+            "isAnswered": false,
+            "question": "b1",
+            "value": 800,
+            "youtubeLink": "",
+          },
+          Object {
+            "answer": "b1a",
+            "category": "f",
+            "imageLink": "",
+            "isAnswered": false,
+            "question": "b1",
+            "value": 1000,
+            "youtubeLink": "",
+          },
+        ],
+      }
+    }
+    value={200}
+  />,
+  Symbol(enzyme.__renderer__): Object {
+    "batchedUpdates": [Function],
+    "getNode": [Function],
+    "render": [Function],
+    "simulateEvent": [Function],
+    "unmount": [Function],
+  },
+  Symbol(enzyme.__node__): Object {
+    "instance": null,
+    "key": null,
+    "nodeType": "host",
+    "props": Object {
+      "children": Array [
+        <Unknown
+          category="0"
+          isAnswered={false}
+          openQuestion={undefined}
+          value={200}
+        />,
+        <Unknown
+          category="1"
+          isAnswered={false}
+          openQuestion={undefined}
+          value={200}
+        />,
+        <Unknown
+          category="2"
+          isAnswered={false}
+          openQuestion={undefined}
+          value={200}
+        />,
+        <Unknown
+          category="3"
+          isAnswered={false}
+          openQuestion={undefined}
+          value={200}
+        />,
+        <Unknown
+          category="4"
+          isAnswered={false}
+          openQuestion={undefined}
+          value={200}
+        />,
+        <Unknown
+          category="5"
+          isAnswered={false}
+          openQuestion={undefined}
+          value={200}
+        />,
+      ],
+    },
+    "ref": null,
+    "rendered": Array [
+      Object {
+        "instance": null,
+        "key": "0",
+        "nodeType": "function",
+        "props": Object {
+          "category": "0",
+          "isAnswered": false,
+          "openQuestion": undefined,
+          "value": 200,
+        },
+        "ref": null,
+        "rendered": null,
+        "type": [Function],
+      },
+      Object {
+        "instance": null,
+        "key": "1",
+        "nodeType": "function",
+        "props": Object {
+          "category": "1",
+          "isAnswered": false,
+          "openQuestion": undefined,
+          "value": 200,
+        },
+        "ref": null,
+        "rendered": null,
+        "type": [Function],
+      },
+      Object {
+        "instance": null,
+        "key": "2",
+        "nodeType": "function",
+        "props": Object {
+          "category": "2",
+          "isAnswered": false,
+          "openQuestion": undefined,
+          "value": 200,
+        },
+        "ref": null,
+        "rendered": null,
+        "type": [Function],
+      },
+      Object {
+        "instance": null,
+        "key": "3",
+        "nodeType": "function",
+        "props": Object {
+          "category": "3",
+          "isAnswered": false,
+          "openQuestion": undefined,
+          "value": 200,
+        },
+        "ref": null,
+        "rendered": null,
+        "type": [Function],
+      },
+      Object {
+        "instance": null,
+        "key": "4",
+        "nodeType": "function",
+        "props": Object {
+          "category": "4",
+          "isAnswered": false,
+          "openQuestion": undefined,
+          "value": 200,
+        },
+        "ref": null,
+        "rendered": null,
+        "type": [Function],
+      },
+      Object {
+        "instance": null,
+        "key": "5",
+        "nodeType": "function",
+        "props": Object {
+          "category": "5",
+          "isAnswered": false,
+          "openQuestion": undefined,
+          "value": 200,
+        },
+        "ref": null,
+        "rendered": null,
+        "type": [Function],
+      },
+    ],
+    "type": "tr",
+  },
+  Symbol(enzyme.__nodes__): Array [
+    Object {
+      "instance": null,
+      "key": null,
+      "nodeType": "host",
+      "props": Object {
+        "children": Array [
+          <Unknown
+            category="0"
+            isAnswered={false}
+            openQuestion={undefined}
+            value={200}
+          />,
+          <Unknown
+            category="1"
+            isAnswered={false}
+            openQuestion={undefined}
+            value={200}
+          />,
+          <Unknown
+            category="2"
+            isAnswered={false}
+            openQuestion={undefined}
+            value={200}
+          />,
+          <Unknown
+            category="3"
+            isAnswered={false}
+            openQuestion={undefined}
+            value={200}
+          />,
+          <Unknown
+            category="4"
+            isAnswered={false}
+            openQuestion={undefined}
+            value={200}
+          />,
+          <Unknown
+            category="5"
+            isAnswered={false}
+            openQuestion={undefined}
+            value={200}
+          />,
+        ],
+      },
+      "ref": null,
+      "rendered": Array [
+        Object {
+          "instance": null,
+          "key": "0",
+          "nodeType": "function",
+          "props": Object {
+            "category": "0",
+            "isAnswered": false,
+            "openQuestion": undefined,
+            "value": 200,
+          },
+          "ref": null,
+          "rendered": null,
+          "type": [Function],
+        },
+        Object {
+          "instance": null,
+          "key": "1",
+          "nodeType": "function",
+          "props": Object {
+            "category": "1",
+            "isAnswered": false,
+            "openQuestion": undefined,
+            "value": 200,
+          },
+          "ref": null,
+          "rendered": null,
+          "type": [Function],
+        },
+        Object {
+          "instance": null,
+          "key": "2",
+          "nodeType": "function",
+          "props": Object {
+            "category": "2",
+            "isAnswered": false,
+            "openQuestion": undefined,
+            "value": 200,
+          },
+          "ref": null,
+          "rendered": null,
+          "type": [Function],
+        },
+        Object {
+          "instance": null,
+          "key": "3",
+          "nodeType": "function",
+          "props": Object {
+            "category": "3",
+            "isAnswered": false,
+            "openQuestion": undefined,
+            "value": 200,
+          },
+          "ref": null,
+          "rendered": null,
+          "type": [Function],
+        },
+        Object {
+          "instance": null,
+          "key": "4",
+          "nodeType": "function",
+          "props": Object {
+            "category": "4",
+            "isAnswered": false,
+            "openQuestion": undefined,
+            "value": 200,
+          },
+          "ref": null,
+          "rendered": null,
+          "type": [Function],
+        },
+        Object {
+          "instance": null,
+          "key": "5",
+          "nodeType": "function",
+          "props": Object {
+            "category": "5",
+            "isAnswered": false,
+            "openQuestion": undefined,
+            "value": 200,
+          },
+          "ref": null,
+          "rendered": null,
+          "type": [Function],
+        },
+      ],
+      "type": "tr",
+    },
+  ],
+  Symbol(enzyme.__options__): Object {
+    "adapter": ReactFifteenAdapter {
+      "options": Object {
+        "supportPrevContextArgumentOfComponentDidUpdate": true,
+      },
+    },
+  },
+}
+`;

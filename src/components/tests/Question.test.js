@@ -6,11 +6,11 @@ import Question from "./../Question";
 
 const mockProps = { question: { question: "Is this the real life?" } };
 
-beforeAll(() => {
-  configure({ adapter: new Adapter() });
-});
-
 describe("Question Component", () => {
+  beforeAll(() => {
+    configure({ adapter: new Adapter() });
+  });
+
   it("renders correctly", () => {
     const component = shallow(<Question {...mockProps} />);
     expect(component).toMatchSnapshot();
