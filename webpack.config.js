@@ -1,64 +1,47 @@
-var webpack = require('webpack');
+const webpack = require('webpack');
+const path = require('path');
 
-module.exports = { 
+module.exports = {
   entry: {
     app: ['./src/index.js']
   },
+  target: 'electron',
   output: {
     filename: 'bundle.js',
-    //publicPath: 'http://localhost:3000/',
-    //path: './'
-    publicPath: '../built/',
-    path: './built/'
-  },  
+    publicPath: path.join(__dirname, 'built'),
+    path: path.join(__dirname, 'built')
+  },
   resolve: {
-    extensions: ['', '.js', '.jsx']
+    extensions: ['.js', '.jsx']
   },
   plugins: [
     new webpack.DefinePlugin({
-      "process.env": { 
-         NODE_ENV: JSON.stringify("production") 
-       }
+      "process.env": {
+        NODE_ENV: JSON.stringify("production")
+      }
     })
   ],
   module: {
-    loaders: [
-      {   
-        test: /\.js?|\.jsx$/,
-        exclude: /node_modules/,
-        loaders: ['babel-loader'] 
-      },  
-      {
-        test: /\.(png|jpg|gif|eot|svg|woff(2)?)(\?[a-z0-9]+)?$/,
-        exclude: /node_modules/,
-        loader: 'file-loader'
-      },
-      {   
-        test: /\.css$/,
-        loader: 'style-loader!css-loader' 
-      },
-      {
-        test: /\.ttf$/,
-        loader: "url-loader?limit=10000&mimetype=application/octet-stream"
-      },
-      {
-        test: /\.json$/,
-        loader: 'json'
-      }
-    ]
-  },
-  externals: [
-    (function () {
-      var IGNORES = [
-        'electron'
-      ];
-      return function (context, request, callback) {
-        if (IGNORES.indexOf(request) >= 0) {
-          return callback(null, "require('" + request + "')");
+    rules: [{
+      test: /\.js?|\.jsx$/,
+      loader: 'babel-loader'
+    }, {
+      test: /\.(png|jpg|gif|eot|svg|woff(2)?)(\?[a-z0-9]+)?$/,
+      use: [
+        { loader: 'file-loader' }
+      ]
+    }, {
+      test: /\.css$/,
+      use: ['style-loader', 'css-loader']
+    }, {
+      test: /\.ttf$/,
+      use: [
+        {
+          loader: 'url-loader?limit=10000&mimetype=application/octet-stream'
         }
-        return callback();
-      };
-    })()
-  ]
+      ]
+    }
+    ]
+  }
 };
 

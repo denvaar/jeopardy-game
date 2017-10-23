@@ -30,6 +30,7 @@ const INITIAL_STATE = {
 
 const appReducer = (state = INITIAL_STATE, action) => {
   switch (action.type) {
+
     case UPDATE_FINAL_SCORE:
       let playerIndex = state.players.findIndex(p => {return p.name === action.player});
       return {
@@ -43,6 +44,7 @@ const appReducer = (state = INITIAL_STATE, action) => {
           ...state.players.slice(playerIndex + 1)
         ]
       };
+
     case SET_WAGER:
       let i = state.players.findIndex(p => {return p.name === action.player});
       return {
@@ -56,11 +58,13 @@ const appReducer = (state = INITIAL_STATE, action) => {
           ...state.players.slice(i + 1)
         ]
       };
+
     case SET_CURRENT_VERSION:
       return {
         ...state,
         currentVersion: action.version
       };
+
     case UPDATE_QUESTION:
       const questionIndex = state.game[state.currentVersion].categories[action.categoryIndex].findIndex(question => {
         return question.question === action.question.question;
@@ -83,6 +87,7 @@ const appReducer = (state = INITIAL_STATE, action) => {
           }
         }
       };
+
     case UPDATE_LAST_CORRECT_PLAYER:
       return {
         ...state,
@@ -124,7 +129,7 @@ const appReducer = (state = INITIAL_STATE, action) => {
     default:
       return state;
   }
-}
+};
 
 const rootReducer = combineReducers({
   appReducer
